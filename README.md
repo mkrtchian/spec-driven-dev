@@ -47,6 +47,8 @@ Both are real tools that solve real problems. They use the same underlying mecha
 
 **What I wanted** was different: automate my existing workflow without replacing it. I already discuss, plan, review, and implement in a way that is simple and that works. I needed version-controlled plans (reviewable in PRs), isolated execution passes, dynamic discovery of project tools and standards (not hardcoded to any stack), and awareness of nested `CLAUDE.md` files. No hidden state, no new workflow to learn.
 
+For a detailed comparison, see [docs/evaluation.md](docs/evaluation.md).
+
 ## What's in this repo
 
 ```
@@ -60,6 +62,7 @@ skills/
 
 docs/
   workflow.md            # The full workflow: discussion > plan > implement
+  evaluation.md          # Comparison with GSD and Superpowers
 ```
 
 Each skill works standalone (`/plan-review my-plan.md`) and composes via the orchestrator (`/implement-plan my-plan.md`).
