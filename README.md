@@ -1,6 +1,25 @@
 # spec-driven-dev
 
-A structured workflow for AI-assisted development - from requirements discussion to verified implementation, through a version-controlled plan.
+Write the plan. Let agents execute it.
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://claude.ai/claude-code)
+
+A structured workflow for AI-assisted development — three isolated agent passes turn your version-controlled plan into reviewed, tested, standards-compliant code.
+
+## Quick start
+
+```bash
+claude plugin add spec-driven-dev
+```
+
+```bash
+# 1. Write a plan (or have an agent draft one for you)
+# 2. Run the orchestrator
+/implement-plan path/to/your/plan.md
+# 3. Three fresh agents handle review, implementation, and standards — one concern each
+```
 
 ## The problem
 
@@ -36,6 +55,18 @@ Each pass starts with a fresh context window, focused on a single concern. No at
 A single agent asked to "implement this plan, follow TDD, and check coding standards" will do all three poorly. An agent that just spent 20 minutes implementing code is not in the right mindset to review standards — it's biased toward defending what it just wrote.
 
 Fresh context per concern. Same principle as code review — the reviewer shouldn't be the author.
+
+## Design decisions
+
+**Plans in git, not in a `.planning/` directory.** Your plan is a markdown file you commit, review in a PR, and share with your team. No local-only state that conflicts across branches.
+
+**No parallelism.** Sequential passes are simpler to reason about, debug, and review. Parallel execution saves time but adds coordination complexity that isn't worth it for single-feature work.
+
+**Dynamic discovery over configuration.** Skills detect your project's test runner, linter, and standards by reading `package.json`, `pyproject.toml`, `CLAUDE.md`, etc. Nothing is hardcoded to a stack.
+
+**Conditional TDD.** Business logic gets test-first. Glue code, wiring, and config changes don't. This matches how experienced developers actually work.
+
+**Minimal surface area.** 1 command, 3 skills, ~330 lines of markdown. You can read and understand everything in 5 minutes. When a prompt doesn't do what you want, you change it — no framework to fight.
 
 ## Why not GSD or Superpowers?
 
@@ -81,13 +112,9 @@ cp commands/implement-plan.md .claude/commands/
 cp -r skills/* .claude/skills/
 ```
 
-Then use it (full workflow or individual skills):
+Skills also work individually:
 
 ```bash
-# Full workflow: review → implement → standards check
-/implement-plan path/to/your/plan.md
-
-# Or use skills individually
 /plan-review path/to/your/plan.md
 /tdd-implementation path/to/your/plan.md
 /standards-review HEAD~3   # review changes since 3 commits ago
