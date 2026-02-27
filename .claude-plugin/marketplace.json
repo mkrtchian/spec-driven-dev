@@ -1,0 +1,15 @@
+{
+  "name": "spec-driven-dev",
+  "description": "Structured AI-assisted development with isolated execution passes",
+  "owner": {
+    "name": "Roman Mkrtchian"
+  },
+  "plugins": [
+    {
+      "name": "spec-driven-dev",
+      "description": "Structured AI-assisted development: plan review, TDD implementation, and standards review in isolated passes",
+      "version": "1.0.0",
+      "source": "./"
+    }
+  ]
+}

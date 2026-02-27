@@ -69,7 +69,11 @@ Each skill works standalone (`/plan-review my-plan.md`) and composes via the orc
 
 ## Installation
 
-Copy the command and skills to your project's `.claude/` directory:
+```bash
+claude plugin add spec-driven-dev
+```
+
+Or manually — copy the command and skills to your project's `.claude/` directory:
 
 ```bash
 mkdir -p .claude/commands .claude/skills
@@ -88,14 +92,6 @@ Then use it (full workflow or individual skills):
 /tdd-implementation path/to/your/plan.md
 /standards-review HEAD~3   # review changes since 3 commits ago
 /standards-review main     # review changes since main
-```
-
-For personal use (not committed to the project):
-
-```bash
-mkdir -p ~/.claude/commands ~/.claude/skills
-cp commands/implement-plan.md ~/.claude/commands/
-cp -r skills/* ~/.claude/skills/
 ```
 
 ## What makes a good plan
