@@ -12,22 +12,22 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-<objective>
+## Objective
+
 Implement a markdown plan through 3 isolated passes with fresh context each.
 Each pass is a dedicated subagent that focuses on one concern only.
 
 Pass 1: Plan review — find gaps, ambiguities, risks in the plan before coding
 Pass 2: Implementation — TDD for business logic, code-then-test for glue/config
 Pass 3: Standards review — verify the diff respects project coding standards
-</objective>
 
-<context>
+## Context
+
 Plan file: $ARGUMENTS
 
 If no argument provided, use AskUserQuestion to ask: "Which plan file should I implement?" with a hint to provide the path.
-</context>
 
-<process>
+## Process
 
 ## 0. Validate
 
@@ -163,5 +163,3 @@ Passes:
   2. Implementation: {N commits, deviations: Y/N}
   3. Standards review: {COMPLIANT / N fixes applied}
 ```
-
-</process>
