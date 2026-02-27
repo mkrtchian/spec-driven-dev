@@ -1,0 +1,71 @@
+---
+description: "Stage and commit changes with conventional commit messages"
+allowed-tools:
+  - Bash
+  - Read
+  - Glob
+  - Grep
+  - AskUserQuestion
+---
+
+<objective>
+Create a clean, well-scoped git commit following conventional commits.
+</objective>
+
+<process>
+
+## 1. Understand the changes
+
+Run in parallel:
+
+- `git status` (never use `-uall`)
+- `git diff` and `git diff --cached` to see staged and unstaged changes
+- `git log --oneline -5` to see recent commit style
+
+Read changed files if needed to understand intent — don't guess from filenames.
+
+## 2. Stage
+
+- Stage relevant files by name — never `git add -A` or `git add .`
+- Never stage files that look like secrets (`.env`, credentials, tokens)
+- If unrelated changes are mixed, ask the user whether to split into multiple commits
+
+## 3. Write the commit message
+
+Follow conventional commits: `type(scope): description`
+
+**Types** (pick the most accurate):
+
+- `feat` — new functionality
+- `fix` — bug fix
+- `docs` — documentation only
+- `refactor` — code change that neither fixes a bug nor adds a feature
+- `test` — adding or updating tests
+- `chore` — build, CI, dependencies, tooling
+
+**Rules**:
+
+- Subject line: imperative mood, lowercase, no period
+- If the change is simple, subject line only — no body
+- If the change really needs explanation, add a body separated by a blank line — explain **why**, not what
+- Scope is optional — use it when it clarifies (e.g., `feat(auth):`, `fix(parser):`)
+- Never use a scope just to have one
+
+## 4. Commit
+
+Use a HEREDOC for the message:
+
+```bash
+git commit -m "$(cat <<'EOF'
+type(scope): description
+
+Optional body explaining why.
+EOF
+)"
+```
+
+## 5. Confirm
+
+Run `git status` after commit to verify clean state. Show the user the commit hash and message.
+
+</process>
