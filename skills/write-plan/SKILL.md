@@ -69,6 +69,7 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
+  model="opus",
   description="Review plan for gaps",
   prompt="
     {content of ./plan-review-prompt.md}
@@ -95,6 +96,7 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
+  model="opus",
   description="Check plan standards",
   prompt="
     {content of ./plan-standards-prompt.md}
@@ -121,6 +123,7 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
+  model="opus",
   description="Break plan into steps",
   prompt="
     {content of ./step-breakdown-prompt.md}

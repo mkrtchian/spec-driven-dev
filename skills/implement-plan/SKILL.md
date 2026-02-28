@@ -48,6 +48,7 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
+  model="opus",
   description="Implement step N",
   prompt="
     {content of ./tdd-implementation-prompt.md}
@@ -85,6 +86,7 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
+  model="opus",
   description="Verify step N",
   prompt="
     {content of ./step-verification-prompt.md}
@@ -138,6 +140,7 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
+  model="opus",
   description="Review standards compliance",
   prompt="
     {content of ./standards-review-prompt.md}
@@ -169,6 +172,7 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
+  model="opus",
   description="Final implementation review",
   prompt="
     {content of ./final-review-prompt.md}
