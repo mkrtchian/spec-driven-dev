@@ -85,7 +85,6 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
-  model="sonnet",
   description="Verify step N",
   prompt="
     {content of ./step-verification-prompt.md}
@@ -96,7 +95,7 @@ Task(
 
     ## Plan file path
 
-    $PLAN_PATH
+    $ARGUMENTS
 
     ## Diff to verify
 
@@ -139,7 +138,6 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
-  model="sonnet",
   description="Review standards compliance",
   prompt="
     {content of ./standards-review-prompt.md}
@@ -171,12 +169,11 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
-  model="sonnet",
   description="Final implementation review",
   prompt="
     {content of ./final-review-prompt.md}
 
-    Plan file: $PLAN_PATH
+    Plan file: $ARGUMENTS
     Baseline: $BASELINE_SHA
   "
 )
@@ -189,7 +186,7 @@ Display:
 ```
 --- Implementation Complete ---
 
-Plan: $PLAN_PATH
+Plan: $ARGUMENTS
 
 Steps:
   Step 1: [title] — [verified / drift: action taken]

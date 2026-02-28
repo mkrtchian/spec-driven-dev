@@ -52,7 +52,7 @@ The plan should cover:
 - **Test scenarios**: What to test, with expected inputs/outputs
 - **Verification**: Commands to run to confirm correctness
 
-Tell the user the plan path when done.
+Tell the user the plan path when done. From this point on, `$PLAN_PATH` refers to the path of the plan file you just created.
 
 ## Phase 3: Plan review (fresh sub-agent)
 
@@ -69,7 +69,6 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
-  model="sonnet",
   description="Review plan for gaps",
   prompt="
     {content of ./plan-review-prompt.md}
@@ -96,7 +95,6 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
-  model="sonnet",
   description="Check plan standards",
   prompt="
     {content of ./plan-standards-prompt.md}
@@ -123,7 +121,6 @@ Spawn a sub-agent:
 ```
 Task(
   subagent_type="general-purpose",
-  model="sonnet",
   description="Break plan into steps",
   prompt="
     {content of ./step-breakdown-prompt.md}

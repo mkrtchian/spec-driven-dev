@@ -4,11 +4,9 @@ description: "Stage and commit changes with conventional commit messages"
 disable-model-invocation: true
 ---
 
-<objective>
-Create a clean, well-scoped git commit following conventional commits.
-</objective>
+## Objective
 
-<process>
+Create a clean, well-scoped git commit following conventional commits.
 
 ## 1. Understand the changes
 
@@ -63,5 +61,3 @@ EOF
 ## 5. Confirm
 
 Run `git status` after commit to verify clean state. Show the user the commit hash and message.
-
-</process>
