@@ -82,9 +82,9 @@ Both are real tools that solve real problems. They use the same underlying mecha
 
 **[Superpowers](https://github.com/obra/superpowers)** is best for strict quality: mandatory TDD, two-stage review, evidence-based verification, cross-platform support. The tradeoff is an opinionated workflow and growing complexity (10k+ lines, 14 skills).
 
-**What I wanted** was different: automate my existing workflow without replacing it. I already discuss, plan, review, and implement in a way that is simple and that works. I needed version-controlled plans (reviewable in PRs), isolated execution passes, dynamic discovery of project tools and standards (not hardcoded to any stack), and awareness of nested `CLAUDE.md` files. No hidden state, no new workflow to learn.
+**What I wanted** was different: automate my existing workflow without replacing it. My manual process — discuss the feature, write a plan, review it, implement step by step — already worked well. But it was tedious to repeat the same orchestration every time, and a single context window couldn't hold all concerns at once. I needed the workflow automated with fresh agents per concern, version-controlled plans (reviewable in PRs), dynamic discovery of project tools and standards (not hardcoded to any stack), and awareness of nested `CLAUDE.md` files. No hidden state, no new workflow to learn — just my workflow, with agents.
 
-For a detailed comparison, see [docs/evaluation.md](docs/evaluation.md).
+For a detailed comparison across 18 dimensions, see **[the full evaluation](docs/evaluation.md)**.
 
 ## What's in this repo
 
