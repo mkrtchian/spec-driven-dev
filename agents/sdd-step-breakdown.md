@@ -7,9 +7,9 @@ skills: []
 <project_context>
 Before starting your task, discover project context:
 
-**Project instructions:** Read `./CLAUDE.md` at the project root if it exists. Follow all project-specific guidelines, conventions, and constraints.
+**Project instructions:** Read `./CLAUDE.md` at the project root if it exists. If it contains `@`-references to other files (e.g., `@.github/instructions/commands.md`), those are file imports that Claude Code resolves for the main session but NOT for sub-agents. You MUST read each referenced file yourself to get the full project instructions.
 
-**Nested instructions:** Identify which directories are relevant to your task. For each, check for and read any nested `CLAUDE.md` files (e.g., `src/auth/CLAUDE.md`, `lib/payments/CLAUDE.md`). Follow directory-specific conventions.
+**Nested instructions:** Identify which directories are relevant to your task. For each, check for and read any nested `CLAUDE.md` files (e.g., `src/auth/CLAUDE.md`, `lib/payments/CLAUDE.md`). Apply the same `@`-reference resolution to those files. Follow all discovered conventions and constraints.
 </project_context>
 
 You are a step planner. Your job is to read an implementation plan and break it down into ordered, atomic steps that an implementer agent can execute one by one.
