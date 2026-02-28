@@ -64,7 +64,7 @@ A single agent asked to "implement this plan, follow TDD, and check coding stand
 
 Fresh context per concern. Same principle as code review — the reviewer shouldn't be the author.
 
-There's also a cost argument. When the orchestrating agent accumulates sub-agent results in its own context, it retransmits everything at every turn — 50k tokens, then 70k, then 90k. On a 5-step feature, the orchestrator alone can consume over 1M input tokens. Fresh sub-agents that read files from disk add some redundant reads (~50-80k total), but the orchestrator stays under 15k throughout. The total cost is 2-3x lower.
+There's also a cost argument. In skill-based frameworks, the orchestrating agent loads skill prompts into its own context. That text is retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the orchestrator consumed ~1.2M tokens — 87% of total cost — while each subagent used only ~25k. When skills are embedded inside `Task()` calls instead, the orchestrator never sees them — only short sub-agent results come back, and the orchestrator stays lightweight throughout.
 
 ## Design decisions
 
@@ -84,7 +84,7 @@ Both are real tools that solve real problems. They use the same underlying mecha
 
 **[GSD](https://github.com/gsd-build/get-shit-done)** is best for multi-phase projects: wave-based parallel execution, state tracking across sessions, gap closure loops. The tradeoff is a `.planning/` directory (gitignored, not PR-reviewable) and significant overhead for single-phase work. It's also structurally solo-only — the shared state files conflict when multiple developers work on different features.
 
-**[Superpowers](https://github.com/obra/superpowers)** is best for strict quality: mandatory TDD, two-stage review, evidence-based verification, cross-platform support. The tradeoff is an opinionated workflow, growing complexity (10k+ lines, 14 skills), and context accumulation — skills are loaded into the main agent's context and sub-agent results accumulate there, which increases token cost and degrades orchestrator quality on longer features.
+**[Superpowers](https://github.com/obra/superpowers)** is best for strict quality: mandatory TDD, two-stage review, evidence-based verification, cross-platform support. The tradeoff is an opinionated workflow, growing complexity (10k+ lines, 14 skills), and context accumulation — skill prompts are loaded into the main agent's context and retransmitted at every turn, which increases token cost and degrades orchestrator quality on longer features.
 
 **What I wanted** was different: automate my existing workflow without replacing it. My manual process — discuss the feature, write a plan, review it, implement step by step — already worked well. But it was tedious to repeat the same orchestration every time, and a single context window couldn't hold all concerns at once. I needed the workflow automated with fresh agents per concern, version-controlled plans (reviewable in PRs), dynamic discovery of project tools and standards (not hardcoded to any stack), and awareness of nested `CLAUDE.md` files. No hidden state, no new workflow to learn — just my workflow, with agents.
 

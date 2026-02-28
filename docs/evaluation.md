@@ -53,7 +53,7 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 
 - Opinionated about the planning phase (`/write-plan` guides creation with its own structure) — you can bring an existing plan to `/execute-plan`, but the workflow steers you toward its format
 - "Iron Laws" are prompt text, not code — well-tested but not enforced by tooling
-- Complexity has grown significantly (generated plans in `docs/plans/` run 8k-27k lines each)
+- Complexity has grown significantly (generated plans in `docs/plans/` run 300-1100 lines each)
 - Subagents may still miss nested CLAUDE.md files depending on skill configuration
 
 ## spec-driven-dev
@@ -83,13 +83,11 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 
 The three frameworks use different patterns for passing information between agents. This has direct impact on token cost, orchestrator quality over time, and sub-agent freshness.
 
-**GSD**: Agents communicate through files on disk. The orchestrator workflow passes file paths in `Task()` prompts — each agent reads its own inputs (PLAN.md, STATE.md, config.json) with a fresh 200k context window. Results are written to disk (SUMMARY.md, VERIFICATION.md), and the orchestrator only checks that output files exist. State transitions (advancing plan counters, updating progress) go through `gsd-tools.cjs` CLI calls, not through the orchestrator's context. This keeps the orchestrator lean (~10-15% of context budget) but requires structured state management (STATE.md, config.json, phase directories).
+**GSD**: Agents communicate through files on disk. The orchestrator workflow passes file paths in `Task()` prompts — each agent reads its own inputs (PLAN.md, STATE.md, config.json) with a fresh 200k context window. Results are written to disk (SUMMARY.md, VERIFICATION.md), and the orchestrator only checks that output files exist. State transitions (advancing plan counters, updating progress) go through `gsd-tools.cjs` CLI calls, not through the orchestrator's context. GSD's own prompts claim this keeps the orchestrator at ~10-15% of context budget, though no measured data is available. The tradeoff is structured state management (STATE.md, config.json, phase directories).
 
-**Superpowers**: Skills are loaded into the main agent's context via the Skill tool. The orchestrator accumulates skill content, sub-agent results, and coordination state in its own context window. On a 5-step feature, the orchestrator retransmits ~50-120k tokens per turn by the end. Sub-agents for implementation get fresh context, but the orchestrator itself degrades as context fills and gets compressed.
+**Superpowers**: Skills are loaded into the main agent's context via the Skill tool. The orchestrating agent carries the skill text in its own context window throughout the session. Sub-agent results also come back into this context, but the dominant cost is the skill text itself — retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the main agent consumed ~1.2M tokens (87% of total cost) while each subagent used only ~25k. Sub-agents get fresh context, but the orchestrator itself degrades as context fills and gets compressed.
 
-**spec-driven-dev**: Each pass is a fresh sub-agent that reads files from disk. The orchestrator sees only short status messages ("PLAN UPDATED", "STEP VERIFIED", "DRIFT DETECTED"). On a 5-step feature, the orchestrator stays under ~15k tokens throughout. Sub-agents do redundant file reads (~50-80k tokens total), but this is far cheaper than retransmitting a growing orchestrator context at every turn.
-
-The practical impact: on a 5-step feature, Superpowers' orchestrator alone can consume over 1M input tokens (retransmitting its growing context ~25 times). GSD's orchestrator stays around ~100k total. spec-driven-dev's orchestrator stays around ~225k total, with sub-agents adding ~240k. Total cost ratio is roughly 5:1:1.5 (Superpowers : GSD : spec-driven-dev).
+**spec-driven-dev**: Skills are embedded inside `Task()` prompts — the orchestrator never sees their content. Each sub-agent gets the skill text in its own fresh context. The orchestrator sees only short status messages ("STEP COMPLETE", "DRIFT DETECTED", "STANDARDS COMPLIANT") and stays lightweight throughout. Sub-agents do redundant file reads, but this is far cheaper than retransmitting a growing orchestrator context at every turn.
 
 ## The real comparison
 
