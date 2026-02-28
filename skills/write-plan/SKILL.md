@@ -1,15 +1,8 @@
 ---
+name: write-plan
 description: "Discuss a feature, draft an implementation plan, and review it through isolated passes"
 argument-hint: "<optional-path-to-requirements-or-spec>"
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Glob
-  - Grep
-  - Task
-  - AskUserQuestion
+disable-model-invocation: true
 ---
 
 ## Objective
@@ -69,7 +62,7 @@ Display:
 Checking for gaps, wrong assumptions, and integration risks...
 ```
 
-Read `.claude/skills/plan-review/SKILL.md`. Use its content as the system prompt for the sub-agent.
+Read `./plan-review-prompt.md`. Use its content as the system prompt for the sub-agent.
 
 Spawn a sub-agent:
 
@@ -79,7 +72,7 @@ Task(
   model="sonnet",
   description="Review plan for gaps",
   prompt="
-    {content of .claude/skills/plan-review/SKILL.md, excluding frontmatter}
+    {content of ./plan-review-prompt.md}
 
     Plan to review: $PLAN_PATH
   "
@@ -96,7 +89,7 @@ Display:
 Checking plan against project coding and testing standards...
 ```
 
-Read `.claude/skills/plan-standards/SKILL.md`. Use its content as the system prompt for the sub-agent.
+Read `./plan-standards-prompt.md`. Use its content as the system prompt for the sub-agent.
 
 Spawn a sub-agent:
 
@@ -106,7 +99,7 @@ Task(
   model="sonnet",
   description="Check plan standards",
   prompt="
-    {content of .claude/skills/plan-standards/SKILL.md, excluding frontmatter}
+    {content of ./plan-standards-prompt.md}
 
     Plan to review: $PLAN_PATH
   "
@@ -123,7 +116,7 @@ Display:
 Splitting plan into atomic implementation steps...
 ```
 
-Read `.claude/skills/step-breakdown/SKILL.md`. Use its content as the system prompt for the sub-agent.
+Read `./step-breakdown-prompt.md`. Use its content as the system prompt for the sub-agent.
 
 Spawn a sub-agent:
 
@@ -133,7 +126,7 @@ Task(
   model="sonnet",
   description="Break plan into steps",
   prompt="
-    {content of .claude/skills/step-breakdown/SKILL.md, excluding frontmatter}
+    {content of ./step-breakdown-prompt.md}
 
     Plan to process: $PLAN_PATH
   "

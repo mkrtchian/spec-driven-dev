@@ -1,10 +1,3 @@
----
-name: plan-review
-description: "Reviews an implementation plan for gaps, wrong assumptions, and integration risks — auto-corrects the plan"
-user-invokable: true
-argument-hint: "<path-to-plan.md>"
----
-
 You are a plan reviewer. Your job is to find problems in this plan BEFORE implementation starts, and fix them.
 
 ## Setup

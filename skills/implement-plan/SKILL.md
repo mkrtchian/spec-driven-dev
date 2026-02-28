@@ -1,15 +1,8 @@
 ---
+name: implement-plan
 description: "Execute a reviewed implementation plan step by step with verification and standards review"
 argument-hint: "<path-to-plan.md>"
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Glob
-  - Grep
-  - Task
-  - AskUserQuestion
+disable-model-invocation: true
 ---
 
 ## Objective
@@ -31,6 +24,7 @@ Check that the plan has an `## Implementation steps` section. If not, tell the u
 Record the current git HEAD before any changes:
 ```bash
 BASELINE_SHA=$(git rev-parse HEAD)
+PREVIOUS_SHA=$BASELINE_SHA
 ```
 
 Parse the implementation steps from the plan. Each step starts with `### Step N:` or `**Step N:`.
@@ -47,7 +41,7 @@ Display:
 Spawning implementer...
 ```
 
-Read `.claude/skills/tdd-implementation/SKILL.md`. Use its content as the system prompt for the sub-agent.
+Read `./tdd-implementation-prompt.md`. Use its content as the system prompt for the sub-agent.
 
 Spawn a sub-agent:
 
@@ -56,7 +50,7 @@ Task(
   subagent_type="general-purpose",
   description="Implement step N",
   prompt="
-    {content of .claude/skills/tdd-implementation/SKILL.md, excluding frontmatter}
+    {content of ./tdd-implementation-prompt.md}
 
     ## Step to implement
 
@@ -84,7 +78,7 @@ Get the commit(s) just made:
 STEP_SHA=$(git rev-parse HEAD)
 ```
 
-Read `.claude/skills/step-verification/SKILL.md`. Use its content as the system prompt for the sub-agent.
+Read `./step-verification-prompt.md`. Use its content as the system prompt for the sub-agent.
 
 Spawn a sub-agent:
 
@@ -94,7 +88,7 @@ Task(
   model="sonnet",
   description="Verify step N",
   prompt="
-    {content of .claude/skills/step-verification/SKILL.md, excluding frontmatter}
+    {content of ./step-verification-prompt.md}
 
     ## Step that was supposed to be implemented
 
@@ -120,6 +114,11 @@ If DRIFT DETECTED:
 
 Record the step result (verified / drift detected + action taken).
 
+Update the baseline for the next step's drift check:
+```bash
+PREVIOUS_SHA=$STEP_SHA
+```
+
 ## 2. Standards review (fresh sub-agent)
 
 Display:
@@ -133,7 +132,7 @@ Get the full diff since baseline:
 CHANGED_FILES=$(git diff $BASELINE_SHA..HEAD --name-only)
 ```
 
-Read `.claude/skills/standards-review/SKILL.md`. Use its content as the system prompt for the sub-agent.
+Read `./standards-review-prompt.md`. Use its content as the system prompt for the sub-agent.
 
 Spawn a sub-agent:
 
@@ -143,7 +142,7 @@ Task(
   model="sonnet",
   description="Review standards compliance",
   prompt="
-    {content of .claude/skills/standards-review/SKILL.md, excluding frontmatter}
+    {content of ./standards-review-prompt.md}
 
     These files were modified since baseline ($BASELINE_SHA):
     $CHANGED_FILES
@@ -165,7 +164,7 @@ Display:
 Reviewing implementation against the full plan...
 ```
 
-Read `.claude/skills/final-review/SKILL.md`. Use its content as the system prompt for the sub-agent.
+Read `./final-review-prompt.md`. Use its content as the system prompt for the sub-agent.
 
 Spawn a sub-agent:
 
@@ -175,7 +174,7 @@ Task(
   model="sonnet",
   description="Final implementation review",
   prompt="
-    {content of .claude/skills/final-review/SKILL.md, excluding frontmatter}
+    {content of ./final-review-prompt.md}
 
     Plan file: $PLAN_PATH
     Baseline: $BASELINE_SHA

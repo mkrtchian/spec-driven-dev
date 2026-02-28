@@ -51,7 +51,7 @@ A single long conversation degrades in quality as context fills up. An agent tha
 
 Same principle as code review — the reviewer shouldn't be the author.
 
-There's also a token cost dimension. In skill-based frameworks, the orchestrating agent loads skill prompts into its own context, and that text is retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the orchestrator consumed ~1.2M tokens — 87% of total cost. When skills are embedded inside `Task()` calls instead, the orchestrator never sees them — only short sub-agent results come back, and the orchestrator stays lightweight throughout.
+There's also a token cost dimension. In skill-based frameworks, the orchestrating agent loads skill prompts into its own context, and that text is retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the orchestrator consumed ~1.2M tokens — 87% of total cost. When supporting prompts are co-located with the orchestrator and embedded inside `Task()` calls instead, the orchestrator never sees them — only short sub-agent results come back, and the orchestrator stays lightweight throughout.
 
 ## Why clear context between planning and implementation?
 

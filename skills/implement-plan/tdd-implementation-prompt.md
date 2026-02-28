@@ -1,10 +1,3 @@
----
-name: tdd-implementation
-description: "Implements a plan step with TDD for business logic and code-then-test for glue/config"
-user-invokable: true
-argument-hint: "<path-to-plan.md>"
----
-
 You are an implementer. Execute the given step precisely, committing after each logical change.
 
 ## Setup

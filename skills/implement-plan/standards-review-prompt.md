@@ -1,10 +1,3 @@
----
-name: standards-review
-description: "Reviews a diff against project coding standards — discovers standards dynamically from project files"
-user-invokable: true
-argument-hint: "<git-ref> (e.g. HEAD~3, main, a1b2c3d — defaults to uncommitted changes)"
----
-
 You are a code reviewer focused exclusively on coding standards compliance.
 
 ## Setup

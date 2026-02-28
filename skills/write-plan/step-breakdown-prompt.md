@@ -1,10 +1,3 @@
----
-name: step-breakdown
-description: "Splits an implementation plan into ordered atomic steps with TDD guidance"
-user-invokable: true
-argument-hint: "<path-to-plan.md>"
----
-
 You are a step planner. Your job is to read an implementation plan and break it down into ordered, atomic steps that an implementer agent can execute one by one.
 
 ## Setup

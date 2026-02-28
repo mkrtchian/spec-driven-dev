@@ -37,7 +37,7 @@ Frameworks like [GSD](https://github.com/gsd-build/get-shit-done) and [Superpowe
 
 ## The approach
 
-Two commands, each orchestrating fresh agents with isolated context:
+Two skills, each orchestrating fresh agents with isolated context:
 
 ```
 /write-plan
@@ -93,25 +93,25 @@ For a detailed comparison across 18 dimensions, see **[the full evaluation](docs
 ## What's in this repo
 
 ```
-commands/
-  write-plan.md            # Orchestrator — discussion → plan → review → steps
-  implement-plan.md        # Orchestrator — step-by-step execution → standards → final review
-
 skills/
-  plan-review/             # Finds gaps, wrong assumptions, integration risks in plans
-  plan-standards/          # Checks plan against project coding and testing conventions
-  step-breakdown/          # Splits a plan into atomic TDD implementation steps
-  tdd-implementation/      # Implements a step with TDD, runs verification, commits
-  step-verification/       # Drift checker — verifies step output matches the plan
-  standards-review/        # Reviews code diff against dynamically discovered standards
-  final-review/            # Post-implementation review with remarks for the developer
+  write-plan/
+    SKILL.md                       # Orchestrator — discussion → plan → review → steps
+    plan-review-prompt.md          # Finds gaps, wrong assumptions, integration risks
+    plan-standards-prompt.md       # Checks plan against project coding conventions
+    step-breakdown-prompt.md       # Splits plan into atomic TDD implementation steps
+  implement-plan/
+    SKILL.md                       # Orchestrator — step-by-step execution → standards → final review
+    tdd-implementation-prompt.md   # Implements a step with TDD, runs verification, commits
+    step-verification-prompt.md    # Drift checker — verifies step output matches the plan
+    standards-review-prompt.md     # Reviews code diff against dynamically discovered standards
+    final-review-prompt.md         # Post-implementation review with remarks for the developer
 
 docs/
   workflow.md              # The full workflow explained
   evaluation.md            # Comparison with GSD and Superpowers
 ```
 
-Most skills work standalone (`/plan-review my-plan.md`) and all compose via the orchestrators.
+Each skill has supporting prompt files that are embedded into `Task()` calls — the orchestrator never loads them into its own context.
 
 ## Installation
 
@@ -121,11 +121,10 @@ Most skills work standalone (`/plan-review my-plan.md`) and all compose via the 
 /plugin install spec-driven-dev@mkrtchian
 ```
 
-Or manually — copy the commands and skills to your project's `.claude/` directory:
+Or manually — copy the skills to your project's `.claude/` directory:
 
 ```bash
-mkdir -p .claude/commands .claude/skills
-cp commands/*.md .claude/commands/
+mkdir -p .claude/skills
 cp -r skills/* .claude/skills/
 ```
 

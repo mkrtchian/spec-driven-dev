@@ -58,7 +58,7 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 
 ## spec-driven-dev
 
-**What it is**: ~770 lines of markdown across 2 commands + 7 skills. A full plan-first workflow: discussion → plan → review → step-by-step execution with drift detection.
+**What it is**: ~735 lines of markdown across 2 skills with co-located supporting prompts. A full plan-first workflow: discussion → plan → review → step-by-step execution with drift detection.
 
 **Strengths**:
 
@@ -66,7 +66,7 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 - Plans are your own markdown files — version-controlled, PR-reviewable, team-compatible
 - Each pass gets fresh context (no attention pollution between concerns)
 - Drift detection per implementation step (fresh agent verifies output vs plan)
-- Most skills work standalone (`/plan-review`) and all compose via the orchestrators
+- Supporting prompts are co-located with orchestrators and embedded in `Task()` calls
 - Dynamically discovers project verification commands (not hardcoded to any stack)
 - Dynamically discovers project coding standards (not hardcoded to any checklist)
 - Explicitly reads nested CLAUDE.md files
@@ -87,7 +87,7 @@ The three frameworks use different patterns for passing information between agen
 
 **Superpowers**: Skills are loaded into the main agent's context via the Skill tool. The orchestrating agent carries the skill text in its own context window throughout the session. Sub-agent results also come back into this context, but the dominant cost is the skill text itself — retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the main agent consumed ~1.2M tokens (87% of total cost) while each subagent used only ~25k. Sub-agents get fresh context, but the orchestrator itself degrades as context fills and gets compressed.
 
-**spec-driven-dev**: Skills are embedded inside `Task()` prompts — the orchestrator never sees their content. Each sub-agent gets the skill text in its own fresh context. The orchestrator sees only short status messages ("STEP COMPLETE", "DRIFT DETECTED", "STANDARDS COMPLIANT") and stays lightweight throughout. Sub-agents do redundant file reads, but this is far cheaper than retransmitting a growing orchestrator context at every turn.
+**spec-driven-dev**: Supporting prompts are co-located alongside each orchestrator skill and embedded inside `Task()` prompts — the orchestrator never sees their content. Each sub-agent gets the prompt text in its own fresh context. The orchestrator sees only short status messages ("STEP COMPLETE", "DRIFT DETECTED", "STANDARDS COMPLIANT") and stays lightweight throughout. Sub-agents do redundant file reads, but this is far cheaper than retransmitting a growing orchestrator context at every turn.
 
 ## The real comparison
 
@@ -109,7 +109,7 @@ The three frameworks use different patterns for passing information between agen
 | Inter-agent communication        | Via files on disk                         | Via orchestrator context                                                   | Via files on disk                    |
 | Session continuity               | Yes (STATE.md)                            | No                                                                         | No                                   |
 | Context monitoring               | Yes (PostToolUse hook)                    | No                                                                         | No                                   |
-| Complexity                       | High (~50k lines, md + JS)                | Medium-High (~11k lines)                                                   | Low (~770 lines)                     |
+| Complexity                       | High (~50k lines, md + JS)                | Medium-High (~11k lines)                                                   | Low (~735 lines)                     |
 | Best for                         | Multi-phase projects with long lifecycles | Solo dev wanting strict quality + mature tooling                            | Team dev with existing plan workflow |
 
 ## When to use what

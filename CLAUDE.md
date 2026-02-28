@@ -3,7 +3,7 @@
 ## Conventions
 
 - Skills go in `skills/<name>/SKILL.md` with YAML frontmatter
-- Commands go in `commands/<name>.md` with YAML frontmatter
+- Supporting prompts go alongside their skill as `<name>-prompt.md` (no frontmatter)
 - Use `/commit` for all commits (conventional commits, no git add -A)
 
 ## Don't
