@@ -11,7 +11,9 @@ A structured workflow for AI-assisted development — from discussion to reviewe
 ## Quick start
 
 ```bash
-claude plugin add spec-driven-dev
+# In Claude Code
+/plugin marketplace add mkrtchian/spec-driven-dev
+/plugin install spec-driven-dev@mkrtchian
 ```
 
 ```bash
@@ -112,7 +114,9 @@ Most skills work standalone (`/plan-review my-plan.md`) and all compose via the 
 ## Installation
 
 ```bash
-claude plugin add spec-driven-dev
+# In Claude Code
+/plugin marketplace add mkrtchian/spec-driven-dev
+/plugin install spec-driven-dev@mkrtchian
 ```
 
 Or manually — copy the commands and skills to your project's `.claude/` directory:
