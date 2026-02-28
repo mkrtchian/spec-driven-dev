@@ -3,7 +3,7 @@
 ## Conventions
 
 - Skills go in `skills/<name>/SKILL.md` with YAML frontmatter
-- Supporting prompts go alongside their skill as `<name>-prompt.md` (no frontmatter)
+- Custom agent definitions go in `agents/sdd-*.md` with YAML frontmatter (plugin root, distributed via plugin install)
 - Use `/commit` for all commits (conventional commits, no git add -A)
 
 ## Don't

@@ -62,18 +62,14 @@ Display:
 Checking for gaps, wrong assumptions, and integration risks...
 ```
 
-Read `./plan-review-prompt.md`. Use its content as the system prompt for the sub-agent.
-
 Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="general-purpose",
+  subagent_type="sdd-plan-reviewer",
   model="opus",
   description="Review plan for gaps",
   prompt="
-    {content of ./plan-review-prompt.md}
-
     Plan to review: $PLAN_PATH
   "
 )
@@ -89,18 +85,14 @@ Display:
 Checking plan against project coding and testing standards...
 ```
 
-Read `./plan-standards-prompt.md`. Use its content as the system prompt for the sub-agent.
-
 Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="general-purpose",
+  subagent_type="sdd-plan-standards",
   model="opus",
   description="Check plan standards",
   prompt="
-    {content of ./plan-standards-prompt.md}
-
     Plan to review: $PLAN_PATH
   "
 )
@@ -116,18 +108,14 @@ Display:
 Splitting plan into atomic implementation steps...
 ```
 
-Read `./step-breakdown-prompt.md`. Use its content as the system prompt for the sub-agent.
-
 Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="general-purpose",
+  subagent_type="sdd-step-breakdown",
   model="opus",
   description="Break plan into steps",
   prompt="
-    {content of ./step-breakdown-prompt.md}
-
     Plan to process: $PLAN_PATH
   "
 )

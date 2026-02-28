@@ -41,18 +41,14 @@ Display:
 Spawning implementer...
 ```
 
-Read `./tdd-implementation-prompt.md`. Use its content as the system prompt for the sub-agent.
-
 Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="general-purpose",
+  subagent_type="sdd-implementer",
   model="opus",
   description="Implement step N",
   prompt="
-    {content of ./tdd-implementation-prompt.md}
-
     ## Step to implement
 
     {content of step N from the plan}
@@ -79,18 +75,14 @@ Get the commit(s) just made:
 STEP_SHA=$(git rev-parse HEAD)
 ```
 
-Read `./step-verification-prompt.md`. Use its content as the system prompt for the sub-agent.
-
 Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="general-purpose",
+  subagent_type="sdd-drift-checker",
   model="opus",
   description="Verify step N",
   prompt="
-    {content of ./step-verification-prompt.md}
-
     ## Step that was supposed to be implemented
 
     {content of step N from the plan}
@@ -133,18 +125,14 @@ Get the full diff since baseline:
 CHANGED_FILES=$(git diff $BASELINE_SHA..HEAD --name-only)
 ```
 
-Read `./standards-review-prompt.md`. Use its content as the system prompt for the sub-agent.
-
 Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="general-purpose",
+  subagent_type="sdd-standards-reviewer",
   model="opus",
   description="Review standards compliance",
   prompt="
-    {content of ./standards-review-prompt.md}
-
     These files were modified since baseline ($BASELINE_SHA):
     $CHANGED_FILES
   "
@@ -165,18 +153,14 @@ Display:
 Reviewing implementation against the full plan...
 ```
 
-Read `./final-review-prompt.md`. Use its content as the system prompt for the sub-agent.
-
 Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="general-purpose",
+  subagent_type="sdd-final-reviewer",
   model="opus",
   description="Final implementation review",
   prompt="
-    {content of ./final-review-prompt.md}
-
     Plan file: $ARGUMENTS
     Baseline: $BASELINE_SHA
   "
