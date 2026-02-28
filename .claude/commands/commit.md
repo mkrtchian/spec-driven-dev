@@ -45,11 +45,11 @@ Follow conventional commits: `type(scope): description`
 
 **Rules**:
 
+- Subject line only — never add a body. One line is enough.
 - Subject line: imperative mood, lowercase, no period
-- If the change is simple, subject line only — no body
-- If the change really needs explanation, add a body separated by a blank line — explain **why**, not what
 - Scope is optional — use it when it clarifies (e.g., `feat(auth):`, `fix(parser):`)
 - Never use a scope just to have one
+- Always add a `Co-Authored-By` trailer with your own model name and version (you know which model you are)
 
 ## 4. Commit
 
@@ -59,7 +59,7 @@ Use a HEREDOC for the message:
 git commit -m "$(cat <<'EOF'
 type(scope): description
 
-Optional body explaining why.
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 EOF
 )"
 ```
