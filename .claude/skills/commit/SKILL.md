@@ -1,11 +1,7 @@
 ---
+name: commit
 description: "Stage and commit changes with conventional commit messages"
-allowed-tools:
-  - Bash
-  - Read
-  - Glob
-  - Grep
-  - AskUserQuestion
+disable-model-invocation: true
 ---
 
 <objective>
