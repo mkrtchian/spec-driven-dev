@@ -79,6 +79,18 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 - Claude Code only (no cross-platform support)
 - Prompt-based, not enforced — same reliability characteristics as the others
 
+## How context flows
+
+The three frameworks use different patterns for passing information between agents. This has direct impact on token cost, orchestrator quality over time, and sub-agent freshness.
+
+**GSD**: Agents communicate through files on disk. The researcher writes RESEARCH.md, the planner reads it and writes PLAN.md, the executor reads that. The orchestrator passes file paths, not content. This keeps the orchestrator lean (~10-15% of context budget) but requires structured state management (STATE.md, config.json, phase directories).
+
+**Superpowers**: Skills are loaded into the main agent's context via the Skill tool. The orchestrator accumulates skill content, sub-agent results, and coordination state in its own context window. On a 5-step feature, the orchestrator retransmits ~50-120k tokens per turn by the end. Sub-agents for implementation get fresh context, but the orchestrator itself degrades as context fills and gets compressed.
+
+**spec-driven-dev**: Each pass is a fresh sub-agent that reads files from disk. The orchestrator sees only short status messages ("PLAN UPDATED", "STEP VERIFIED", "DRIFT DETECTED"). On a 5-step feature, the orchestrator stays under ~15k tokens throughout. Sub-agents do redundant file reads (~50-80k tokens total), but this is far cheaper than retransmitting a growing orchestrator context at every turn.
+
+The practical impact: on a 5-step feature, Superpowers' orchestrator alone can consume over 1M input tokens (retransmitting its growing context ~25 times). GSD's orchestrator stays around ~100k total. spec-driven-dev's orchestrator stays around ~225k total, with sub-agents adding ~240k. Total cost ratio is roughly 5:1:1.5 (Superpowers : GSD : spec-driven-dev).
+
 ## The real comparison
 
 |                                  | GSD                                       | Superpowers                                                                 | spec-driven-dev                      |
@@ -94,12 +106,17 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 | Dynamic stack discovery          | No (project-specific)                     | Partial (some skills adapt)                                                 | Yes (verification + standards)       |
 | Team-compatible                  | No (local state, conflicts in teams)      | Mostly (docs/plans/)                                                        | Yes (no special setup)               |
 | Cross-platform                   | Claude Code, OpenCode, Gemini CLI, Codex  | Claude Code, Cursor, Codex, OpenCode                                        | Claude Code only                     |
+| Orchestrator context cost        | Low (passes file paths)                   | High (skills + results accumulate)                                         | Low (status messages only)           |
+| Sub-agent freshness at step N    | Fresh                                     | Fresh (impl), degraded (orchestrator)                                      | Fresh                                |
+| Inter-agent communication        | Via files on disk                         | Via orchestrator context                                                   | Via files on disk                    |
+| Session continuity               | Yes (STATE.md)                            | No                                                                         | No                                   |
+| Context monitoring               | Yes (PostToolUse hook)                    | No                                                                         | No                                   |
 | Complexity                       | High (~50k lines, md + JS)                | Medium-High (~11k lines)                                                   | Low (~770 lines)                     |
 | Best for                         | Multi-phase projects with long lifecycles | Solo dev wanting strict quality + mature tooling                            | Team dev with existing plan workflow |
 
 ## When to use what
 
-**Use GSD** if you're building a multi-phase project solo and want automated state tracking, parallel execution, and gap closure. Accept the `.planning/` overhead and the learning curve.
+**Use GSD** if you're building a multi-phase project solo and want automated state tracking, parallel execution, and gap closure. Accept the `.planning/` overhead and the learning curve. Note that GSD is structurally solo-only — its shared state files (STATE.md, ROADMAP.md, REQUIREMENTS.md) conflict when multiple developers work on different features simultaneously, even on separate branches.
 
 **Use Superpowers** if you want the strictest quality controls, cross-platform support, and a mature, well-tested framework. Accept that it's opinionated about workflow and growing in complexity.
 

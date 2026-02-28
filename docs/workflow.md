@@ -51,6 +51,8 @@ A single long conversation degrades in quality as context fills up. An agent tha
 
 Same principle as code review — the reviewer shouldn't be the author.
 
+There's also a token cost dimension. When sub-agent results accumulate in the orchestrator's context, every subsequent turn retransmits everything — the context grows from 15k to 50k to 90k tokens, and each turn pays for the full history. Fresh sub-agents that read files from disk do some redundant reads, but the orchestrator stays light. On a 5-step feature, the difference can be 2-3x in total input tokens.
+
 ## Why clear context between planning and implementation?
 
 The discussion phase fills context with exploration, questions, dead ends, and design alternatives. By the time you run `/implement-plan`, you want a fresh agent that reads only the plan — no residual bias from the discussion.
