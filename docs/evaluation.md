@@ -2,13 +2,13 @@
 
 ## How AI coding frameworks work
 
-Both GSD and Superpowers use the same underlying mechanism: Claude Code's `Task()` tool to spawn subagents. Each subagent gets a fresh 200k token context window. The frameworks are markdown prompts that instruct Claude how to orchestrate these subagents.
-
-There is no process isolation, no Docker containers, no separate CLI invocations. It's prompt engineering with structure.
+All three frameworks use the same underlying mechanism: Claude Code's `Task()` tool to spawn subagents. Each subagent gets a fresh 200k token context window. The frameworks differ in how they structure prompts, manage state, and orchestrate these subagents — but there is no process isolation, no Docker containers, no separate CLI invocations. It's prompt engineering with structure.
 
 ## GSD (Get Shit Done)
 
 **What it is**: ~33k lines of markdown + ~17k lines of JavaScript. A full project lifecycle manager: requirements gathering, roadmap creation, phase planning, parallel execution, verification, gap closure.
+
+**How it's built**: Three layers. **Commands** (`/gsd:*`) are markdown entry points that delegate to **workflows** — markdown files containing the actual orchestration logic with inline `Task()` calls and bash commands. Workflows spawn **agents** (gsd-executor, gsd-planner, gsd-verifier, etc.) via Claude Code's native `Task()` subagent mechanism — 11 specialized agent types in total. A JavaScript CLI (`gsd-tools.cjs`, ~60 subcommands) handles state management and discovery but never spawns agents — it returns structured JSON that workflows and agents consume to know what to read and what to do.
 
 **Strengths**:
 
@@ -83,7 +83,7 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 
 The three frameworks use different patterns for passing information between agents. This has direct impact on token cost, orchestrator quality over time, and sub-agent freshness.
 
-**GSD**: Agents communicate through files on disk. The researcher writes RESEARCH.md, the planner reads it and writes PLAN.md, the executor reads that. The orchestrator passes file paths, not content. This keeps the orchestrator lean (~10-15% of context budget) but requires structured state management (STATE.md, config.json, phase directories).
+**GSD**: Agents communicate through files on disk. The orchestrator workflow passes file paths in `Task()` prompts — each agent reads its own inputs (PLAN.md, STATE.md, config.json) with a fresh 200k context window. Results are written to disk (SUMMARY.md, VERIFICATION.md), and the orchestrator only checks that output files exist. State transitions (advancing plan counters, updating progress) go through `gsd-tools.cjs` CLI calls, not through the orchestrator's context. This keeps the orchestrator lean (~10-15% of context budget) but requires structured state management (STATE.md, config.json, phase directories).
 
 **Superpowers**: Skills are loaded into the main agent's context via the Skill tool. The orchestrator accumulates skill content, sub-agent results, and coordination state in its own context window. On a 5-step feature, the orchestrator retransmits ~50-120k tokens per turn by the end. Sub-agents for implementation get fresh context, but the orchestrator itself degrades as context fills and gets compressed.
 

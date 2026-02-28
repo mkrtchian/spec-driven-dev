@@ -129,19 +129,6 @@ cp commands/*.md .claude/commands/
 cp -r skills/* .claude/skills/
 ```
 
-## What makes a good plan
-
-The agent drafts the plan, but you review it. Here's what to look for — a precise plan produces precise code, a vague plan produces drift.
-
-- **Context**: What problem this solves and why this approach
-- **Approach**: High-level strategy
-- **Files to modify**: Exact paths, what changes in each
-- **Code details**: Type signatures, method signatures, key logic
-- **What stays unchanged**: Explicitly list what should NOT be touched
-- **Edge cases**: Scenarios and expected behavior
-- **Test scenarios**: What to test, with expected inputs/outputs
-- **Verification**: Commands to run to confirm correctness
-
 ## Limitations
 
 These are prompts, not code. There are no hard guarantees that the agent will:
