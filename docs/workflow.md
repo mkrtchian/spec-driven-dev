@@ -1,41 +1,56 @@
 # Workflow
 
-## 1. Discuss
+## 1. Discuss and plan
 
-Start a conversation with Claude Code. If you have requirements from a product discovery (user stories, acceptance criteria, technical constraints), give them to the agent upfront as context. Then let it explore the codebase, ask questions, and go back and forth until you have a shared understanding.
-
-This is where the real engineering happens — scoping, trade-off analysis, understanding existing patterns.
-
-## 2. Write the plan
-
-Ask Claude to write a detailed implementation plan as a markdown file. Modern models (Opus, Sonnet) write well-structured plans out of the box — let the agent draft, then review and iterate.
-
-A good plan typically covers: context and approach, files to modify, code details (signatures, types, key logic), what stays unchanged, edge cases, test scenarios, and verification commands. But don't force a rigid template — review the plan for precision and completeness rather than format compliance.
-
-## 3. Version the plan
-
-Save the plan in your repo (e.g., `docs/plans/`). Commit it. It's now reviewable in PRs by your team, even if they don't use AI tooling.
-
-## 4. Clear context and implement
-
-Clear the conversation context. Run:
+Start a conversation with Claude Code. If you have requirements from a product discovery (user stories, acceptance criteria, technical constraints), give them as context:
 
 ```
-/implement-plan path/to/plan.md
+/write-plan path/to/requirements.md
 ```
 
-This spawns 3 isolated agents sequentially:
+Or just launch it with an idea:
 
-**Pass 1 — Plan Review**: A fresh agent reads the plan AND the actual source files. It checks if assumptions are correct, if anything is missing, if there are integration risks. This catches problems before any code is written.
+```
+/write-plan
+```
 
-**Pass 2 — Implementation**: A fresh agent implements the plan with atomic commits. TDD for business logic, code-then-test for glue. Discovers and runs the project's verification commands (tests, linter, type-checker) after each commit.
+The agent will:
+1. **Discuss**: Explore the codebase, ask you clarifying questions about requirements and technical approach, until you both have a shared understanding.
+2. **Draft**: Write a detailed implementation plan to `plans/YYYY-MM-DD_feature-name.md`.
+3. **Review the plan** (fresh agent): Check for gaps, wrong assumptions, integration risks. Auto-corrects the plan.
+4. **Check standards** (fresh agent): Verify the plan respects project coding and testing conventions. Auto-corrects.
+5. **Break into steps** (fresh agent): Split the plan into ordered, atomic implementation steps with TDD guidance.
 
-**Pass 3 — Standards Review**: A fresh agent reads the full diff and checks it against project coding standards (discovered dynamically from CLAUDE.md, CONTRIBUTING.md, linter configs, etc.). Applies mechanical fixes if needed.
+The command ends here. You review the plan — manually or by asking the agent for changes.
 
-## 5. Review and adjust
+## 2. Implement
 
-Check the result. Ask for adjustments if needed. The plan is still there as the reference — you can point to specific sections.
+Once the plan looks good, clear context and run:
 
-## Why clear context between phases?
+```
+/implement-plan plans/YYYY-MM-DD_feature-name.md
+```
+
+The orchestrator executes each step from the plan:
+
+**For each step:**
+- **Implementer** (fresh agent): Writes failing tests first (for business logic), then implements. Runs tests, lint, typecheck. Commits.
+- **Drift checker** (fresh agent): Verifies the step produced exactly what the plan asked for — nothing more, nothing less. Flags issues if found.
+
+**After all steps:**
+- **Standards review** (fresh agent): Checks the full diff against project coding standards. Auto-applies mechanical fixes.
+- **Final review** (fresh agent): Reads the full plan and full diff. Produces remarks — coverage gaps, deviations, risks, test quality, things to watch.
+
+## 3. Review and adjust
+
+Check the result. The plan is still there as the reference — you can point to specific sections and ask for adjustments.
+
+## Why fresh context at each pass?
 
 A single long conversation degrades in quality as context fills up. An agent that just spent 20 minutes implementing code is not in the right mindset to review coding standards: it's biased toward defending what it just wrote. A fresh agent with only the diff and the standards document has no such bias.
+
+Same principle as code review — the reviewer shouldn't be the author.
+
+## Why clear context between planning and implementation?
+
+The discussion phase fills context with exploration, questions, dead ends, and design alternatives. By the time you run `/implement-plan`, you want a fresh agent that reads only the plan — no residual bias from the discussion.

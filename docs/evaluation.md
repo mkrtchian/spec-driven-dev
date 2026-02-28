@@ -36,7 +36,7 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 
 > **Note**: Not tested yet — the analysis below is based on code reading. Will be updated after real usage.
 
-**What it is**: ~11k lines of markdown across 15 skills. A skill-based workflow framework with strict quality controls. Cross-platform (Claude Code, Cursor, Codex, OpenCode).
+**What it is**: ~11k lines of markdown across 14 skills. A skill-based workflow framework with strict quality controls. Cross-platform (Claude Code, Cursor, Codex, OpenCode).
 
 **Strengths**:
 
@@ -58,25 +58,25 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 
 ## spec-driven-dev
 
-**What it is**: ~330 lines of markdown across 1 command + 3 skills. A minimal orchestrator for plan-first development.
+**What it is**: ~770 lines of markdown across 2 commands + 7 skills. A full plan-first workflow: discussion → plan → review → step-by-step execution with drift detection.
 
 **Strengths**:
 
+- Full cycle: `/write-plan` (discussion → reviewed plan) and `/implement-plan` (step-by-step execution)
 - Plans are your own markdown files — version-controlled, PR-reviewable, team-compatible
 - Each pass gets fresh context (no attention pollution between concerns)
-- Skills work standalone (`/plan-review`) and compose via the orchestrator (`/implement-plan`)
+- Drift detection per implementation step (fresh agent verifies output vs plan)
+- Most skills work standalone (`/plan-review`) and all compose via the orchestrators
 - Dynamically discovers project verification commands (not hardcoded to any stack)
 - Dynamically discovers project coding standards (not hardcoded to any checklist)
 - Explicitly reads nested CLAUDE.md files
 - No hidden state, no special directories
-- Simple enough to understand completely in 5 minutes
 
 **Weaknesses**:
 
 - No parallelism (sequential passes)
 - No state tracking across sessions
-- No gap closure loop
-- No deviation rules — relies on agent judgment
+- Claude Code only (no cross-platform support)
 - Prompt-based, not enforced — same reliability characteristics as the others
 
 ## The real comparison
@@ -87,13 +87,14 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 | Bring your own plan              | Partial (--prd flag)                      | Partial (execute-plan accepts plans, but workflow steers toward its format) | Yes (that's the point)               |
 | Parallel execution               | Yes (wave-based)                          | Yes (per-task subagents + dispatching skill)                                | No                                   |
 | Test execution during impl       | In subagent (not visible)                 | Evidence-based (must prove)                                                 | In subagent (explicit instruction)   |
-| Post-implementation verification | Static analysis (grep)                    | Evidence-based                                                              | Standards review pass                |
+| Drift detection per step         | No                                        | No                                                                          | Yes (fresh agent per step)           |
+| Post-implementation verification | Static analysis (grep)                    | Evidence-based                                                              | Standards review + final review      |
 | TDD                              | Opt-in (type: tdd)                        | Mandatory (Iron Law)                                                        | Conditional (logic=TDD, glue=no)     |
 | Nested CLAUDE.md awareness       | No                                        | Partial                                                                     | Yes (explicit in prompts)            |
 | Dynamic stack discovery          | No (project-specific)                     | Partial (some skills adapt)                                                 | Yes (verification + standards)       |
 | Team-compatible                  | No (local state, conflicts in teams)      | Mostly (docs/plans/)                                                        | Yes (no special setup)               |
 | Cross-platform                   | Claude Code, OpenCode, Gemini CLI, Codex  | Claude Code, Cursor, Codex, OpenCode                                        | Claude Code only                     |
-| Complexity                       | High (~50k lines, md + JS)                | Medium-High (~11k lines)                                                   | Low (~330 lines)                     |
+| Complexity                       | High (~50k lines, md + JS)                | Medium-High (~11k lines)                                                   | Low (~770 lines)                     |
 | Best for                         | Multi-phase projects with long lifecycles | Solo dev wanting strict quality + mature tooling                            | Team dev with existing plan workflow |
 
 ## When to use what

@@ -1,11 +1,11 @@
 ---
 name: plan-review
-description: "Reviews an implementation plan before coding starts — finds gaps, wrong assumptions, and integration risks"
+description: "Reviews an implementation plan for gaps, wrong assumptions, and integration risks — auto-corrects the plan"
 user-invokable: true
 argument-hint: "<path-to-plan.md>"
 ---
 
-You are a plan reviewer. Your ONLY job is to find problems in this plan BEFORE implementation starts.
+You are a plan reviewer. Your job is to find problems in this plan BEFORE implementation starts, and fix them.
 
 ## Setup
 
@@ -22,6 +22,14 @@ You are a plan reviewer. Your ONLY job is to find problems in this plan BEFORE i
 4. **Test coverage**: Are all behavioral changes covered by test scenarios?
 5. **Integration risks**: Could these changes break other consumers/callers not mentioned in the plan?
 
+## Action
+
+When you find issues:
+
+1. **Fix them directly** — edit the plan file to correct wrong paths, wrong type signatures, missing edge cases, missing files, etc.
+2. Keep the plan's intent and structure — only change what's actually wrong.
+3. If a fix requires a decision you can't make (e.g., choosing between two valid approaches), leave the plan as-is and add a comment: `<!-- REVIEW: [description of the decision needed] -->`.
+
 ## Output
 
 Return ONE of:
@@ -30,11 +38,11 @@ Return ONE of:
 
 Brief confirmation of what you checked and why the plan is sound.
 
-### ISSUES FOUND
+### PLAN UPDATED
 
-For each issue:
-- **[Category]**: Description of the problem
-- **Suggestion**: How to fix it
-- **Severity**: `blocking` / `important` / `minor`
+For each change made:
+- **What changed**: Description of the edit
+- **Why**: What was wrong with the original
+- **Severity**: `blocking` (would have caused implementation failure) / `important` (would have caused bugs) / `minor` (imprecision)
 
-Be concise. Only flag real issues, not stylistic preferences.
+Be concise. Only fix real issues, not stylistic preferences.

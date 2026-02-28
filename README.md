@@ -1,12 +1,12 @@
 # spec-driven-dev
 
-Write the plan. Let agents execute it.
+Your plan, fresh agents, zero drift.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://claude.ai/claude-code)
 
-A structured workflow for AI-assisted development — three isolated agent passes turn your version-controlled plan into reviewed, tested, standards-compliant code.
+A structured workflow for AI-assisted development — from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan.
 
 ## Quick start
 
@@ -15,10 +15,13 @@ claude plugin add spec-driven-dev
 ```
 
 ```bash
-# 1. Write a plan (or have an agent draft one for you)
-# 2. Run the orchestrator
-/implement-plan path/to/your/plan.md
-# 3. Three fresh agents handle review, implementation, and standards — one concern each
+# 1. Discuss the feature, draft and review the plan
+/write-plan
+
+# 2. Review the plan yourself, adjust if needed
+
+# 3. Execute the plan step by step
+/implement-plan plans/2025-03-01_my-feature.md
 ```
 
 ## The problem
@@ -32,23 +35,26 @@ Frameworks like [GSD](https://github.com/gsd-build/get-shit-done) and [Superpowe
 
 ## The approach
 
-My workflow already works well: discuss the feature with an AI agent, have it draft a detailed plan, review and iterate on that plan, then implement. This repo automates the implementation phase — the part where fresh, isolated agents each handle one concern with a clean context.
+Two commands, each orchestrating fresh agents with isolated context:
 
 ```
-You (human)                          AI Agents
-─────────────                        ─────────────────────────────────────────
-Discuss feature with AI        ───>  Agent explores codebase, clarifies requirements
-Have the agent write a plan    ───>  Agent drafts a detailed implementation plan
-Review and iterate             ───>  You refine until the plan is precise
-Version the plan in git        ───>  PR-reviewable by your team
+/write-plan
+  You discuss the feature with the agent              ←  interactive
+  Agent drafts a detailed plan                        ←  plans/YYYY-MM-DD_feature.md
+  Fresh agent reviews plan for gaps                   ←  auto-corrects
+  Fresh agent checks plan against standards           ←  auto-corrects
+  Fresh agent breaks plan into atomic steps            ←  TDD guidance per step
+  You review the plan                                 ←  human in the loop
 
-/implement-plan plan.md
-                               ───>  Pass 1: Plan reviewer (fresh context) — finds gaps
-                               ───>  Pass 2: Implementer (fresh context) — TDD, atomic commits
-                               ───>  Pass 3: Standards reviewer (fresh context) — checks diff
+/implement-plan plans/YYYY-MM-DD_feature.md
+  For each step:
+    Fresh agent implements (TDD, tests, lint, commit)
+    Fresh agent checks for drift vs plan
+  Fresh agent reviews standards on full diff
+  Fresh agent produces final review remarks
 ```
 
-Each pass starts with a fresh context window, focused on a single concern. No attention pollution between phases.
+Each agent starts with a fresh context window, focused on a single concern. No attention pollution between phases.
 
 ## Why isolated passes
 
@@ -66,7 +72,7 @@ Fresh context per concern. Same principle as code review — the reviewer should
 
 **Conditional TDD.** Business logic gets test-first. Glue code, wiring, and config changes don't. This matches how experienced developers actually work.
 
-**Minimal surface area.** 1 command, 3 skills, ~330 lines of markdown. You can read and understand everything in 5 minutes. When a prompt doesn't do what you want, you change it — no framework to fight.
+**Drift detection per step.** After each implementation step, a fresh agent verifies the output matches the plan. Drift is caught early, not discovered at the end.
 
 ## Why not GSD or Superpowers?
 
@@ -84,19 +90,24 @@ For a detailed comparison, see [docs/evaluation.md](docs/evaluation.md).
 
 ```
 commands/
-  implement-plan.md      # Orchestrator — chains all 3 skills in isolated passes
+  write-plan.md            # Orchestrator — discussion → plan → review → steps
+  implement-plan.md        # Orchestrator — step-by-step execution → standards → final review
 
 skills/
-  plan-review/           # /plan-review — finds gaps, wrong assumptions, integration risks
-  tdd-implementation/    # /tdd-implementation — TDD for logic, discovers verification commands
-  standards-review/      # /standards-review — checks diff against dynamically discovered standards
+  plan-review/             # Finds gaps, wrong assumptions, integration risks in plans
+  plan-standards/          # Checks plan against project coding and testing conventions
+  step-breakdown/          # Splits a plan into atomic TDD implementation steps
+  tdd-implementation/      # Implements a step with TDD, runs verification, commits
+  step-verification/       # Drift checker — verifies step output matches the plan
+  standards-review/        # Reviews code diff against dynamically discovered standards
+  final-review/            # Post-implementation review with remarks for the developer
 
 docs/
-  workflow.md            # The full workflow: discussion > plan > implement
-  evaluation.md          # Comparison with GSD and Superpowers
+  workflow.md              # The full workflow explained
+  evaluation.md            # Comparison with GSD and Superpowers
 ```
 
-Each skill works standalone (`/plan-review my-plan.md`) and composes via the orchestrator (`/implement-plan my-plan.md`).
+Most skills work standalone (`/plan-review my-plan.md`) and all compose via the orchestrators.
 
 ## Installation
 
@@ -104,21 +115,12 @@ Each skill works standalone (`/plan-review my-plan.md`) and composes via the orc
 claude plugin add spec-driven-dev
 ```
 
-Or manually — copy the command and skills to your project's `.claude/` directory:
+Or manually — copy the commands and skills to your project's `.claude/` directory:
 
 ```bash
 mkdir -p .claude/commands .claude/skills
-cp commands/implement-plan.md .claude/commands/
+cp commands/*.md .claude/commands/
 cp -r skills/* .claude/skills/
-```
-
-Skills also work individually:
-
-```bash
-/plan-review path/to/your/plan.md
-/tdd-implementation path/to/your/plan.md
-/standards-review HEAD~3   # review changes since 3 commits ago
-/standards-review main     # review changes since main
 ```
 
 ## What makes a good plan
@@ -126,6 +128,7 @@ Skills also work individually:
 The agent drafts the plan, but you review it. Here's what to look for — a precise plan produces precise code, a vague plan produces drift.
 
 - **Context**: What problem this solves and why this approach
+- **Approach**: High-level strategy
 - **Files to modify**: Exact paths, what changes in each
 - **Code details**: Type signatures, method signatures, key logic
 - **What stays unchanged**: Explicitly list what should NOT be touched

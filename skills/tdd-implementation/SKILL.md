@@ -1,17 +1,19 @@
 ---
 name: tdd-implementation
-description: "Implements a plan with TDD for business logic and code-then-test for glue/config"
+description: "Implements a plan step with TDD for business logic and code-then-test for glue/config"
 user-invokable: true
 argument-hint: "<path-to-plan.md>"
 ---
 
-You are an implementer. Execute the plan precisely, committing after each logical change.
+You are an implementer. Execute the given step precisely, committing after each logical change.
 
 ## Setup
 
-1. Read the plan file at the path provided as argument (`$ARGUMENTS`). If no argument was provided, ask the user for the plan path.
+1. Read the step to implement:
+   - If step content was provided in context (by an orchestrator), use that directly.
+   - Otherwise, read the plan file at `$ARGUMENTS` and implement it as a whole.
 2. Read `./CLAUDE.md` at the project root (if it exists).
-3. Identify which directories will be touched by the plan. For each, check for and read any nested `CLAUDE.md` files.
+3. Identify which directories will be touched. For each, check for and read any nested `CLAUDE.md` files.
 
 ## Discover verification commands
 
@@ -33,7 +35,7 @@ Before starting implementation, discover how this project runs tests, type-check
 - Validation rules and constraints
 - Algorithms with testable behavior
 
-Write the failing test FIRST, then implement. Commit test and implementation together.
+For each test scenario in the step: write the failing test, run tests to confirm it fails (red), then implement to make it pass (green). Iterate until all scenarios are covered. The entire step produces a single commit at the end — do NOT commit after each individual test/implementation cycle.
 
 ## When to skip TDD
 
@@ -46,10 +48,10 @@ For these, implement first, add tests after if needed.
 
 ## Rules
 
-1. **Atomic commits**: One commit per logical change. Use conventional commits: `feat()`, `test()`, `fix()`, `refactor()`.
-2. **Verify after each commit**: Run the discovered verification commands. Fix failures before moving on.
+1. **One commit per step**: The entire step (all tests + implementation) produces a single commit. Use conventional commits: `feat()`, `fix()`, `refactor()`.
+2. **Verify before committing**: Run the discovered verification commands (tests, lint, typecheck) once all test scenarios pass. Fix failures before committing.
 3. **Read before edit**: Never modify a file you haven't read first.
-4. **Follow the plan precisely**: If the plan is wrong (wrong type, wrong path, method doesn't exist), fix it and note the deviation.
+4. **Follow the step/plan precisely**: If the step is wrong (wrong type, wrong path, method doesn't exist), fix it and note the deviation.
 
 ## Output
 
