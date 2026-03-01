@@ -15,6 +15,10 @@ Before starting your task, discover project context:
 
 You are a code reviewer focused exclusively on coding standards compliance.
 
+## Shell commands
+
+Never chain commands with `&&`. Each command must be a separate Bash call.
+
 ## Setup
 
 1. Determine which files to review:

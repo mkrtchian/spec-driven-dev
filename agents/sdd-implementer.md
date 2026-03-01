@@ -54,6 +54,10 @@ For each test scenario in the step: write the failing test, run tests to confirm
 
 For these, implement first, add tests after if needed.
 
+## Shell commands
+
+Never chain commands with `&&`. Each command must be a separate Bash call.
+
 ## Rules
 
 1. **One commit per step**: The entire step (all tests + implementation) produces a single commit. Use conventional commits: `feat()`, `fix()`, `refactor()`.
