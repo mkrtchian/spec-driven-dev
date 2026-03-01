@@ -46,8 +46,8 @@ For each step, provide:
 
 - **Step N: [short title]**
 - **Files**: Which files to create or modify
-- **Do**: What to implement (be specific — function signatures, key logic, expected behavior)
-- **Test**: What test scenarios to cover, with expected inputs/outputs (if any — the implementer decides whether to use test-first or implement-first based on context)
+- **Do**: What to implement (be specific — function signatures, key logic, expected behavior). **List test files and fixtures before production code** so the implementer naturally writes tests first.
+- **Test**: What test scenarios to cover, with expected inputs/outputs
 - **Verify**: Which commands to run and what result to expect
 
 ## Action

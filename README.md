@@ -101,7 +101,7 @@ agents/
   sdd-plan-reviewer.md             # Finds gaps, wrong assumptions, integration risks
   sdd-plan-standards.md            # Checks plan against project coding conventions
   sdd-step-breakdown.md            # Splits plan into fewest possible implementation steps
-  sdd-implementer.md               # Implements a step (decides TDD approach), runs verification
+  sdd-implementer.md               # Implements a step (test-first by default), runs verification
   sdd-step-hardener.md             # Hardens each step — catches drift and emergent issues, fixes them, commits
   sdd-standards-enforcer.md        # Fixes coding standards violations, verifies, and commits
   sdd-final-reviewer.md            # Fixes obvious issues, flags trade-offs for the developer

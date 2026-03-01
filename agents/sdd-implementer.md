@@ -36,11 +36,11 @@ Before starting implementation, discover how this project runs tests, type-check
 
 ## TDD decision
 
-You decide whether to use test-first or implement-first based on the step content and project context. Use your judgment:
+Decide test-first vs implement-first **before writing any code**, then follow that order regardless of how the step's **Do** section is ordered.
 
-**Prefer test-first** when the step involves testable behavior — business logic, data transformations, validation, algorithms. Write all tests for the step first → run tests to confirm they all fail (red) → implement the code to make them pass (green).
+**Default: test-first.** When the step involves testable behavior — business logic, data transformations, validation, algorithms — write all tests (fixtures, helpers, specs) first → run tests to confirm they fail (red) → implement production code to make them pass (green).
 
-**Prefer implement-first** when tests would add no value or aren't practical — type exports, wiring, configuration, glue code, or when the testing infrastructure doesn't support it. Add tests after if needed.
+**Exception: implement-first.** Only when tests would add no value or aren't practical — type exports, wiring, configuration, glue code, or when the testing infrastructure doesn't support it. Add tests after if needed.
 
 ## Shell commands
 
