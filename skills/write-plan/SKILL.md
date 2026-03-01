@@ -105,7 +105,7 @@ Report what was found/fixed to the user.
 Display:
 ```
 --- Pass 3: Step Breakdown ---
-Splitting plan into atomic implementation steps...
+Splitting plan into implementation steps...
 ```
 
 Spawn a sub-agent:
