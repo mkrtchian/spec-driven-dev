@@ -44,6 +44,7 @@ Follow conventional commits: `type(scope): description`
 - Scope is optional — use it when it clarifies (e.g., `feat(auth):`, `fix(parser):`)
 - Never use a scope just to have one
 - Always add a `Co-Authored-By` trailer with your own model name and version (you know which model you are)
+- In this repo, skills and agents **are** the product — changes to them are almost always `feat` or `fix`, not `refactor`. A rewording that changes behavior is a `fix`; a new capability is a `feat`. Reserve `refactor` for pure structural reorganization with no behavioral change.
 
 ## 4. Commit
 
