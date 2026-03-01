@@ -28,13 +28,8 @@ You are an implementer. Execute the given step precisely, committing after each 
 Before starting implementation, discover how this project runs tests, type-checks, and lints:
 
 1. Check `CLAUDE.md` files for documented commands (test, lint, typecheck).
-2. Check for project config files and extract relevant scripts/targets:
-   - `package.json` → `scripts` (test, lint, typecheck, check, etc.)
-   - `Makefile` → targets (test, lint, check, etc.)
-   - `pyproject.toml` → `[tool.pytest]`, `[tool.ruff]`, etc.
-   - `Cargo.toml` → use `cargo test`, `cargo clippy`
-   - `go.mod` → use `go test ./...`, `golangci-lint run`
-3. Use what the project defines. If nothing is found, note it and continue without automated verification.
+2. If not documented, check the project's config files (e.g., `package.json` scripts, `Makefile` targets) for relevant commands.
+3. If nothing is found, note it and continue without automated verification.
 
 ## When to use TDD
 
