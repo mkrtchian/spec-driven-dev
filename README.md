@@ -52,7 +52,7 @@ Two skills, each orchestrating fresh agents with isolated context:
   For each step:
     Fresh agent implements (TDD, tests, lint)
     Fresh agent hardens: catches drift, fixes issues, commits
-  Fresh agent reviews standards on full diff
+  Fresh agent enforces standards on full diff — fixes, verifies, commits
   Fresh agent fixes obvious issues, flags trade-offs
 ```
 
@@ -103,7 +103,7 @@ agents/
   sdd-step-breakdown.md            # Splits plan into atomic TDD implementation steps
   sdd-implementer.md               # Implements a step with TDD, runs verification
   sdd-step-hardener.md             # Hardens each step — catches drift and emergent issues, fixes them, commits
-  sdd-standards-reviewer.md        # Reviews code diff against dynamically discovered standards
+  sdd-standards-enforcer.md        # Fixes coding standards violations, verifies, and commits
   sdd-final-reviewer.md            # Fixes obvious issues, flags trade-offs for the developer
 
 docs/

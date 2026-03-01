@@ -31,6 +31,14 @@ Never chain commands with `&&`. Each command must be a separate Bash call.
 3. Read the full current version of all files that were modified.
 4. Read `./CLAUDE.md` at the project root (if it exists).
 
+## Discover verification commands
+
+Before starting the review, discover how this project runs tests, type-checks, and lints:
+
+1. Check `CLAUDE.md` files for documented commands (test, lint, typecheck).
+2. If not documented, check the project's config files (e.g., `package.json` scripts, `Makefile` targets, `pyproject.toml`, `Cargo.toml`, `go.mod`) for relevant commands.
+3. If nothing is found, note it and continue without automated verification.
+
 ## Review dimensions
 
 1. **Plan coverage**: Was every item in the plan addressed? List any gaps.
@@ -50,7 +58,7 @@ Never chain commands with `&&`. Each command must be a separate Bash call.
 - Convention violations caught by project CLAUDE.md rules
 - Missing edge case handling that has a single correct solution
 
-After fixing, stage only the changed files, then run the project's verification commands (discover them the same way: check CLAUDE.md, package.json scripts, Makefile targets, pyproject.toml, Cargo.toml, go.mod). If verification passes, commit with message: `fix(review): <concise description of what was fixed>`. If verification fails, revert your fix and flag the issue as a trade-off instead.
+After fixing, stage only the changed files, then run the discovered verification commands (tests, lint, typecheck). If verification passes, commit with message: `fix(review): <concise description of what was fixed>`. If verification fails, revert your fix and flag the issue as a trade-off instead.
 
 ### FLAG as remarks (do NOT fix):
 

@@ -99,11 +99,11 @@ Handle the result:
 
 Record the step result (committed / committed with fixes / issues found + action taken).
 
-## 2. Standards review (fresh sub-agent)
+## 2. Standards enforcement (fresh sub-agent)
 
 Display:
 ```
---- Standards Review ---
+--- Standards Enforcement ---
 Checking all changes against project coding standards...
 ```
 
@@ -116,9 +116,9 @@ Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="spec-driven-dev:sdd-standards-reviewer",
+  subagent_type="spec-driven-dev:sdd-standards-enforcer",
   model="opus",
-  description="Review standards compliance",
+  description="Enforce standards compliance",
   prompt="
     These files were modified since baseline ($BASELINE_SHA):
     $CHANGED_FILES
@@ -126,11 +126,11 @@ Task(
 )
 ```
 
-If ISSUES FOUND:
-- Apply the fixes directly
-- Discover verification commands the same way the implementation skill does: check CLAUDE.md, package.json scripts, Makefile targets, pyproject.toml, Cargo.toml, go.mod
-- Run verification commands
-- Commit: `refactor: apply coding standards`
+Handle the result:
+
+- **STANDARDS COMPLIANT**: Continue.
+- **STANDARDS ENFORCED**: Note the fixes applied, continue.
+- **ISSUES FOUND**: Present the issues to the user and ask how to proceed.
 
 ## 3. Final review (fresh sub-agent)
 
@@ -168,7 +168,7 @@ Steps:
   Step 2: [title] — [committed / committed with N fixes / issues: action taken]
   ...
 
-Standards review: [COMPLIANT / N fixes applied]
+Standards enforcement: [COMPLIANT / N fixes applied]
 
 Commits: (list all commits from $BASELINE_SHA to HEAD with hash and message)
 

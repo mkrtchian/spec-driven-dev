@@ -98,7 +98,7 @@ The three frameworks use different patterns for passing information between agen
 | Parallel execution               | Yes (wave-based)                          | Yes (per-task subagents + dispatching skill)                                | No                                   |
 | Test execution during impl       | In subagent (not visible)                 | Evidence-based (must prove)                                                 | In subagent (explicit instruction)   |
 | Step hardening per step          | No                                        | No                                                                          | Yes (verifies + fixes per step)      |
-| Post-implementation verification | Static analysis (grep)                    | Evidence-based                                                              | Standards review + final review      |
+| Post-implementation verification | Static analysis (grep)                    | Evidence-based                                                              | Standards enforcement + final review |
 | TDD                              | Opt-in (type: tdd)                        | Mandatory (Iron Law)                                                        | Conditional (logic=TDD, glue=no)     |
 | Nested CLAUDE.md awareness       | No                                        | Partial                                                                     | Yes (explicit in prompts)            |
 | Dynamic stack discovery          | No (project-specific)                     | Partial (some skills adapt)                                                 | Yes (verification + standards)       |

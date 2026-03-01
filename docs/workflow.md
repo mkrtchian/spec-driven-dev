@@ -38,7 +38,7 @@ The orchestrator executes each step from the plan:
 - **Step hardener** (fresh agent): Catches drift from the plan and emergent issues (broken imports, type mismatches, edge cases), fixes them, and commits the step. Flags trade-offs it can't resolve.
 
 **After all steps:**
-- **Standards review** (fresh agent): Checks the full diff against project coding standards. Reports violations; the orchestrator applies fixes.
+- **Standards enforcement** (fresh agent): Checks the full diff against project coding standards. Fixes violations directly, verifies (tests, lint, typecheck), and commits.
 - **Final review** (fresh agent): Reads the full plan and full diff. Fixes obvious issues directly (typos, wrong imports, dead code, convention violations) and commits them. Flags trade-offs and architectural choices as remarks for you to decide.
 
 ## 3. Review and adjust
