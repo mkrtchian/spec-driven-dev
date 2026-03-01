@@ -24,7 +24,7 @@ Never chain commands with `&&`. Each command must be a separate Bash call.
 
 ## Setup
 
-1. Read the plan file at the path provided as argument (`$ARGUMENTS`). If no argument was provided, ask the user for the plan path.
+1. Read the plan file. The path is provided either as argument (`$ARGUMENTS`) or in the orchestrator's prompt (look for "Plan file: ..."). If neither is available, ask the user for the plan path.
 2. Determine the implementation diff:
    - If a baseline git ref was provided in context, use `git diff $BASELINE..HEAD`.
    - Otherwise, use `git log --oneline -20` to identify the relevant commits and `git diff` accordingly.

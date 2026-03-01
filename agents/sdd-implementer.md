@@ -20,8 +20,11 @@ You are an implementer. Execute the given step precisely. Do NOT commit — the 
 1. Read the step to implement:
    - If step content was provided in context (by an orchestrator), use that directly.
    - Otherwise, read the plan file at `$ARGUMENTS` and implement it as a whole.
-2. Read `./CLAUDE.md` at the project root (if it exists).
-3. Identify which directories will be touched. For each, check for and read any nested `CLAUDE.md` files.
+2. Read the full plan context:
+   - If the full plan was provided in context (by an orchestrator), read it to understand the bigger picture — what came before this step, what comes after, and the overall design.
+   - If a plan file path was provided, read the plan file for the same purpose.
+3. Read `./CLAUDE.md` at the project root (if it exists).
+4. Identify which directories will be touched. For each, check for and read any nested `CLAUDE.md` files.
 
 ## Discover verification commands
 
