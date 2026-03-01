@@ -53,7 +53,7 @@ Two skills, each orchestrating fresh agents with isolated context:
     Fresh agent implements (TDD, tests, lint, commit)
     Fresh agent checks for drift vs plan
   Fresh agent reviews standards on full diff
-  Fresh agent produces final review remarks
+  Fresh agent fixes obvious issues, flags trade-offs
 ```
 
 Each agent starts with a fresh context window, focused on a single concern. No attention pollution between phases.
@@ -104,7 +104,7 @@ agents/
   sdd-implementer.md               # Implements a step with TDD, runs verification, commits
   sdd-drift-checker.md             # Drift checker — verifies step output matches the plan
   sdd-standards-reviewer.md        # Reviews code diff against dynamically discovered standards
-  sdd-final-reviewer.md            # Post-implementation review with remarks for the developer
+  sdd-final-reviewer.md            # Fixes obvious issues, flags trade-offs for the developer
 
 docs/
   workflow.md                      # The full workflow explained

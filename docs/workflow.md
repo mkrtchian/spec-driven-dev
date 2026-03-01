@@ -39,7 +39,7 @@ The orchestrator executes each step from the plan:
 
 **After all steps:**
 - **Standards review** (fresh agent): Checks the full diff against project coding standards. Reports violations; the orchestrator applies fixes.
-- **Final review** (fresh agent): Reads the full plan and full diff. Produces remarks — coverage gaps, deviations, risks, test quality, things to watch.
+- **Final review** (fresh agent): Reads the full plan and full diff. Fixes obvious issues directly (typos, wrong imports, dead code, convention violations) and commits them. Flags trade-offs and architectural choices as remarks for you to decide.
 
 ## 3. Review and adjust
 
