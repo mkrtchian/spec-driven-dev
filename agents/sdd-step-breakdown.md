@@ -39,31 +39,15 @@ Before writing steps, discover how this project runs tests, type-checks, and lin
 - **Each step is self-contained.** An implementer reading only that step (plus the plan context section) should know exactly what to do.
 - **Aim for 3-8 steps for a typical feature.** If you have more than 10, you're probably splitting too fine. If you have only 1-2, the feature might need more structure.
 
-## When a step should use TDD (test-first)
-
-- Business logic, services, domain logic
-- Data transformations, parsing, validation
-- Algorithms with testable behavior
-
-The implementer will iterate red/green within the step: write a failing test, implement to pass, write the next failing test, implement to pass, etc. The step describes ALL the test scenarios for that unit — the implementer handles the cycle.
-
-## When a step should skip TDD (implement-first)
-
-- Type exports, imports, wiring
-- Configuration changes
-- Glue code connecting existing components
-- Simple CRUD with no business logic
-
 ## Step format
 
 For each step, provide:
 
 - **Step N: [short title]**
 - **Files**: Which files to create or modify
-- **Approach**: `test-first` or `implement-first`
 - **Do**: What to implement (be specific — function signatures, key logic, expected behavior)
-- **Test** (if test-first): What test to write, with expected inputs/outputs
-- **Verify**: Which commands to run and what result to expect (e.g., "run tests — 1 new test should fail, then pass after implementation")
+- **Test**: What test scenarios to cover, with expected inputs/outputs (if any — the implementer decides whether to use test-first or implement-first based on context)
+- **Verify**: Which commands to run and what result to expect
 
 ## Action
 
@@ -76,6 +60,4 @@ If the plan already has an `## Implementation steps` section, replace it entirel
 ### STEPS ADDED
 
 - **Total steps**: N
-- **Test-first steps**: N
-- **Implement-first steps**: N
 - Brief summary of the step sequence

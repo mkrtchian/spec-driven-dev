@@ -45,7 +45,7 @@ Two skills, each orchestrating fresh agents with isolated context:
   Agent drafts a detailed plan                        ←  plans/YYYY-MM-DD_feature.md
   Fresh agent reviews plan for gaps                   ←  auto-corrects
   Fresh agent checks plan against standards           ←  auto-corrects
-  Fresh agent breaks plan into atomic steps            ←  TDD guidance per step
+  Fresh agent breaks plan into atomic steps
   You review the plan                                 ←  human in the loop
 
 /implement-plan plans/YYYY-MM-DD_feature.md
@@ -100,8 +100,8 @@ skills/
 agents/
   sdd-plan-reviewer.md             # Finds gaps, wrong assumptions, integration risks
   sdd-plan-standards.md            # Checks plan against project coding conventions
-  sdd-step-breakdown.md            # Splits plan into atomic TDD implementation steps
-  sdd-implementer.md               # Implements a step with TDD, runs verification
+  sdd-step-breakdown.md            # Splits plan into atomic implementation steps
+  sdd-implementer.md               # Implements a step (decides TDD approach), runs verification
   sdd-step-hardener.md             # Hardens each step — catches drift and emergent issues, fixes them, commits
   sdd-standards-enforcer.md        # Fixes coding standards violations, verifies, and commits
   sdd-final-reviewer.md            # Fixes obvious issues, flags trade-offs for the developer

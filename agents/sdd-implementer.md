@@ -1,6 +1,6 @@
 ---
 name: sdd-implementer
-description: "Execute a single implementation step with TDD and verification — does not commit"
+description: "Execute a single implementation step with verification — does not commit"
 skills: []
 model: opus
 ---
@@ -34,23 +34,13 @@ Before starting implementation, discover how this project runs tests, type-check
 2. If not documented, check the project's config files (e.g., `package.json` scripts, `Makefile` targets) for relevant commands.
 3. If nothing is found, note it and continue without automated verification.
 
-## When to use TDD
+## TDD decision
 
-- Business logic (services, domain logic, transformations)
-- Data transformations, parsing, formatting
-- Validation rules and constraints
-- Algorithms with testable behavior
+You decide whether to use test-first or implement-first based on the step content and project context. Use your judgment:
 
-For each test scenario in the step: write the failing test, run tests to confirm it fails (red), then implement to make it pass (green). Iterate until all scenarios are covered.
+**Prefer test-first** when the step involves testable behavior — business logic, data transformations, validation, algorithms. For each test scenario: write the failing test → run tests (red) → implement to pass (green). Iterate until all scenarios are covered.
 
-## When to skip TDD
-
-- Type exports, imports, wiring
-- Configuration changes
-- Glue code connecting existing components
-- Simple CRUD with no business logic
-
-For these, implement first, add tests after if needed.
+**Prefer implement-first** when tests would add no value or aren't practical — type exports, wiring, configuration, glue code, or when the testing infrastructure doesn't support it. Add tests after if needed.
 
 ## Shell commands
 

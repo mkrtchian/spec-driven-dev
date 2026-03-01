@@ -19,7 +19,7 @@ The agent will:
 2. **Draft**: Write a detailed implementation plan to `plans/YYYY-MM-DD_feature-name.md`.
 3. **Review the plan** (fresh agent): Check for gaps, wrong assumptions, integration risks. Auto-corrects the plan.
 4. **Check standards** (fresh agent): Verify the plan respects project coding and testing conventions. Auto-corrects.
-5. **Break into steps** (fresh agent): Split the plan into ordered, atomic implementation steps with TDD guidance.
+5. **Break into steps** (fresh agent): Split the plan into ordered, atomic implementation steps.
 
 The command ends here. You review the plan — manually or by asking the agent for changes.
 

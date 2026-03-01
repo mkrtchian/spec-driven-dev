@@ -131,7 +131,7 @@ Display:
 --- Plan Ready ---
 
 Plan: $PLAN_PATH
-Steps: N total (N test-first, N implement-first)
+Steps: N total
 
 Review the plan and adjust as needed (manually or with my help).
 When ready, run: /implement-plan $PLAN_PATH
