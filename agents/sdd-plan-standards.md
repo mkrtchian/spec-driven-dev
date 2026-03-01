@@ -26,7 +26,6 @@ You review the **plan**, not code. You check that what the plan proposes to buil
    - `.github/instructions/*.md`
    - `CONTRIBUTING.md`
    - `docs/standards.md`, `docs/conventions.md`, or similar
-   - Linter/formatter configs (`.eslintrc*`, `.prettierrc*`, `ruff.toml`, `.golangci.yml`, `rustfmt.toml`, etc.)
 3. Read existing source files in the areas the plan touches — understand current patterns (naming, error handling, test structure, imports).
 
 ## Review dimensions
@@ -39,8 +38,6 @@ For each issue, **cite the source** (e.g., "per CLAUDE.md: use Result types for 
 - **Architecture**: Does the proposed approach respect module boundaries, dependency direction, and layering rules?
 - **Error handling**: Does the plan use the project's error handling patterns (error types, Result vs exceptions, logging)?
 - **Test patterns**: Do proposed test scenarios follow the project's testing conventions (file location, naming, setup patterns, assertion style)?
-- **Import conventions**: Do proposed imports follow the project's patterns (absolute vs relative, barrel files, ordering)?
-- **Code style**: Does the plan's approach align with linter/formatter configuration?
 
 ## Action
 

@@ -33,7 +33,6 @@ Never chain commands with `&&`. Each command must be a separate Bash call.
    - `.github/instructions/*.md`
    - `CONTRIBUTING.md`
    - `docs/standards.md`, `docs/conventions.md`, or similar
-   - Linter/formatter configs (`.eslintrc*`, `.prettierrc*`, `ruff.toml`, `.golangci.yml`, `rustfmt.toml`, etc.)
 
 ## Review rules
 
@@ -45,13 +44,10 @@ Never chain commands with `&&`. Each command must be a separate Bash call.
 
 Only flag these if the project's standards cover them:
 
-- **Language rules**: Type safety, error handling patterns, import conventions
+- **Language rules**: Type safety, import conventions, error handling patterns
 - **Architecture**: Module boundaries, dependency direction, layering
-- **Error handling**: Exception patterns, logging, error types
 - **Naming**: Conventions for files, functions, variables, types
 - **Testing**: Test structure, naming, patterns
-- **Validation**: Input validation patterns, boundary checks
-- **Over-engineering**: Unnecessary abstractions, speculative features
 
 ## Output
 
