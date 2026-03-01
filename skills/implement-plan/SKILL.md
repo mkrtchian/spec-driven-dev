@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 ## Objective
 
-Execute a reviewed plan through its implementation steps. Each step gets a dedicated implementer agent, followed by a drift checker. After all steps, a standards review and final review close the loop.
+Execute a reviewed plan through its implementation steps. Each step gets a dedicated implementer agent, followed by a step hardener that verifies completeness and fixes emergent issues. After all steps, a standards review and final review close the loop.
 
 ## Context
 
@@ -24,7 +24,6 @@ Check that the plan has an `## Implementation steps` section. If not, tell the u
 Record the current git HEAD before any changes:
 ```bash
 BASELINE_SHA=$(git rev-parse HEAD)
-PREVIOUS_SHA=$BASELINE_SHA
 ```
 
 Parse the implementation steps from the plan. Each step starts with `### Step N:` or `**Step N:`.
@@ -62,26 +61,21 @@ Task(
 
 If the implementer reports FAIL on verification: present to user, ask how to proceed.
 
-### 1b. Drift check (fresh sub-agent)
+### 1b. Step hardening (fresh sub-agent)
 
 Display:
 ```
---- Step N: Drift Check ---
-Verifying implementation matches plan...
-```
-
-Get the commit(s) just made:
-```bash
-STEP_SHA=$(git rev-parse HEAD)
+--- Step N: Hardening ---
+Verifying and fixing if needed...
 ```
 
 Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="spec-driven-dev:sdd-drift-checker",
+  subagent_type="spec-driven-dev:sdd-step-hardener",
   model="opus",
-  description="Verify step N",
+  description="Harden step N",
   prompt="
     ## Step that was supposed to be implemented
 
@@ -90,27 +84,20 @@ Task(
     ## Plan file path
 
     $ARGUMENTS
-
-    ## Diff to verify
-
-    Run: git diff $PREVIOUS_SHA..$STEP_SHA
   "
 )
 ```
 
-If DRIFT DETECTED:
-- Present the drift to the user
-- Ask: "Fix the drift, skip it, or stop implementation?"
-- If fix: spawn another implementer to address the drift, then re-check
-- If skip: continue to next step
-- If stop: go directly to the summary
+Handle the result:
 
-Record the step result (verified / drift detected + action taken).
+- **STEP COMMITTED**: Continue to next step.
+- **STEP COMMITTED WITH FIXES**: Note the fixes applied, continue to next step.
+- **ISSUES FOUND**: No commit was made. Present the issues to the user. Ask: "Fix these issues, skip them, or stop implementation?"
+  - If fix: spawn another implementer to address the issues, then re-harden
+  - If skip: the orchestrator commits as-is, then continue to next step
+  - If stop: go directly to the summary
 
-Update the baseline for the next step's drift check:
-```bash
-PREVIOUS_SHA=$STEP_SHA
-```
+Record the step result (committed / committed with fixes / issues found + action taken).
 
 ## 2. Standards review (fresh sub-agent)
 
@@ -177,8 +164,8 @@ Display:
 Plan: $ARGUMENTS
 
 Steps:
-  Step 1: [title] — [verified / drift: action taken]
-  Step 2: [title] — [verified / drift: action taken]
+  Step 1: [title] — [committed / committed with N fixes / issues: action taken]
+  Step 2: [title] — [committed / committed with N fixes / issues: action taken]
   ...
 
 Standards review: [COMPLIANT / N fixes applied]

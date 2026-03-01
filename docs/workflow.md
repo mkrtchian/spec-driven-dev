@@ -34,8 +34,8 @@ Once the plan looks good, clear context and run:
 The orchestrator executes each step from the plan:
 
 **For each step:**
-- **Implementer** (fresh agent): Writes failing tests first (for business logic), then implements. Runs tests, lint, typecheck. Commits.
-- **Drift checker** (fresh agent): Verifies the step produced exactly what the plan asked for — nothing more, nothing less. Flags issues if found.
+- **Implementer** (fresh agent): Writes failing tests first (for business logic), then implements. Runs tests, lint, typecheck. Does not commit.
+- **Step hardener** (fresh agent): Catches drift from the plan and emergent issues (broken imports, type mismatches, edge cases), fixes them, and commits the step. Flags trade-offs it can't resolve.
 
 **After all steps:**
 - **Standards review** (fresh agent): Checks the full diff against project coding standards. Reports violations; the orchestrator applies fixes.

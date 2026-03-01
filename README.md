@@ -50,8 +50,8 @@ Two skills, each orchestrating fresh agents with isolated context:
 
 /implement-plan plans/YYYY-MM-DD_feature.md
   For each step:
-    Fresh agent implements (TDD, tests, lint, commit)
-    Fresh agent checks for drift vs plan
+    Fresh agent implements (TDD, tests, lint)
+    Fresh agent hardens: catches drift, fixes issues, commits
   Fresh agent reviews standards on full diff
   Fresh agent fixes obvious issues, flags trade-offs
 ```
@@ -76,7 +76,7 @@ There's also a cost argument. In skill-based frameworks, the orchestrating agent
 
 **Conditional TDD.** Business logic gets test-first. Glue code, wiring, and config changes don't. This matches how experienced developers actually work.
 
-**Drift detection per step.** After each implementation step, a fresh agent verifies the output matches the plan. Drift is caught early, not discovered at the end.
+**Step hardening.** After each implementation step, a fresh agent catches drift from the plan and emergent issues, and fixes them. Problems are caught early, not discovered at the end.
 
 ## Why not GSD or Superpowers?
 
@@ -101,8 +101,8 @@ agents/
   sdd-plan-reviewer.md             # Finds gaps, wrong assumptions, integration risks
   sdd-plan-standards.md            # Checks plan against project coding conventions
   sdd-step-breakdown.md            # Splits plan into atomic TDD implementation steps
-  sdd-implementer.md               # Implements a step with TDD, runs verification, commits
-  sdd-drift-checker.md             # Drift checker — verifies step output matches the plan
+  sdd-implementer.md               # Implements a step with TDD, runs verification
+  sdd-step-hardener.md             # Hardens each step — catches drift and emergent issues, fixes them, commits
   sdd-standards-reviewer.md        # Reviews code diff against dynamically discovered standards
   sdd-final-reviewer.md            # Fixes obvious issues, flags trade-offs for the developer
 
@@ -131,7 +131,7 @@ These are prompts, not code. There are no hard guarantees that the agent will:
 - Follow TDD strictly
 - Review carefully
 
-In practice, well-written prompts with Opus are followed 95%+ of the time. The drift checker catches most of the remaining 5% — a fresh agent comparing implementation against the plan is harder to fool than a self-review. For hard guarantees, use git pre-commit hooks (which agents trigger when they commit).
+In practice, well-written prompts with Opus are followed 95%+ of the time. The step hardener catches most of the remaining 5% — a fresh agent that catches drift and emergent issues, and fixes them directly. For hard guarantees, use git pre-commit hooks (which agents trigger when they commit).
 
 ## License
 

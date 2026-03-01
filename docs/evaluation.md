@@ -58,14 +58,14 @@ The reformatting step is not trivial — GSD breaks the plan into its own task f
 
 ## spec-driven-dev
 
-**What it is**: ~800 lines of markdown across 2 orchestrator skills and 7 custom agent definitions. A full plan-first workflow: discussion → plan → review → step-by-step execution with drift detection.
+**What it is**: ~800 lines of markdown across 2 orchestrator skills and 7 custom agent definitions. A full plan-first workflow: discussion → plan → review → step-by-step execution with step hardening.
 
 **Strengths**:
 
 - Full cycle: `/write-plan` (discussion → reviewed plan) and `/implement-plan` (step-by-step execution)
 - Plans are your own markdown files — version-controlled, PR-reviewable, team-compatible
 - Each pass gets fresh context (no attention pollution between concerns)
-- Drift detection per implementation step (fresh agent verifies output vs plan)
+- Step hardening per implementation step (fresh agent catches drift and emergent issues, fixes them)
 - Agent prompts are custom agent definitions, resolved by the runtime — never loaded into orchestrator context
 - Dynamically discovers project verification commands (not hardcoded to any stack)
 - Dynamically discovers project coding standards (not hardcoded to any checklist)
@@ -87,7 +87,7 @@ The three frameworks use different patterns for passing information between agen
 
 **Superpowers**: Skills are loaded into the main agent's context via the Skill tool. The orchestrating agent carries the skill text in its own context window throughout the session. Sub-agent results also come back into this context, but the dominant cost is the skill text itself — retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the main agent consumed ~1.2M tokens (87% of total cost) while each subagent used only ~25k. Sub-agents get fresh context, but the orchestrator itself degrades as context fills and gets compressed.
 
-**spec-driven-dev**: Agent prompts are custom agent definitions distributed via the plugin. The orchestrator skills reference them by `subagent_type` — the runtime resolves the agent definition and passes it to the sub-agent directly, so the orchestrator never sees their content. The orchestrator sees only short status messages ("STEP COMPLETE", "DRIFT DETECTED", "STANDARDS COMPLIANT") and stays lightweight throughout. Sub-agents do redundant file reads, but this is far cheaper than retransmitting a growing orchestrator context at every turn.
+**spec-driven-dev**: Agent prompts are custom agent definitions distributed via the plugin. The orchestrator skills reference them by `subagent_type` — the runtime resolves the agent definition and passes it to the sub-agent directly, so the orchestrator never sees their content. The orchestrator sees only short status messages ("STEP COMMITTED", "ISSUES FOUND", "STANDARDS COMPLIANT") and stays lightweight throughout. Sub-agents do redundant file reads, but this is far cheaper than retransmitting a growing orchestrator context at every turn.
 
 ## The real comparison
 
@@ -97,7 +97,7 @@ The three frameworks use different patterns for passing information between agen
 | Bring your own plan              | Partial (--prd flag)                      | Partial (execute-plan accepts plans, but workflow steers toward its format) | Yes (that's the point)               |
 | Parallel execution               | Yes (wave-based)                          | Yes (per-task subagents + dispatching skill)                                | No                                   |
 | Test execution during impl       | In subagent (not visible)                 | Evidence-based (must prove)                                                 | In subagent (explicit instruction)   |
-| Drift detection per step         | No                                        | No                                                                          | Yes (fresh agent per step)           |
+| Step hardening per step          | No                                        | No                                                                          | Yes (verifies + fixes per step)      |
 | Post-implementation verification | Static analysis (grep)                    | Evidence-based                                                              | Standards review + final review      |
 | TDD                              | Opt-in (type: tdd)                        | Mandatory (Iron Law)                                                        | Conditional (logic=TDD, glue=no)     |
 | Nested CLAUDE.md awareness       | No                                        | Partial                                                                     | Yes (explicit in prompts)            |
