@@ -7,6 +7,7 @@ tools:
   - Grep
   - Glob
 skills: []
+model: opus
 ---
 
 <project_context>

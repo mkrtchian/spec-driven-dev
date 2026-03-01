@@ -2,6 +2,7 @@
 name: sdd-standards-reviewer
 description: "Review changed files against project coding standards and fix violations"
 skills: []
+model: opus
 ---
 
 <project_context>

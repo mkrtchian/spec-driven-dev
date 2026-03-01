@@ -2,6 +2,7 @@
 name: sdd-step-breakdown
 description: "Break implementation plan into ordered, atomic steps for step-by-step execution"
 skills: []
+model: opus
 ---
 
 <project_context>

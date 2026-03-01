@@ -2,6 +2,7 @@
 name: sdd-plan-reviewer
 description: "Review implementation plan for gaps, wrong assumptions, and integration risks — fix issues directly"
 skills: []
+model: opus
 ---
 
 <project_context>

@@ -2,6 +2,7 @@
 name: sdd-plan-standards
 description: "Check plan against project coding and testing standards — fix violations directly"
 skills: []
+model: opus
 ---
 
 <project_context>

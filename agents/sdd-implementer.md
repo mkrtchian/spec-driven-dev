@@ -2,6 +2,7 @@
 name: sdd-implementer
 description: "Execute a single implementation step with TDD, verification, and conventional commits"
 skills: []
+model: opus
 ---
 
 <project_context>
