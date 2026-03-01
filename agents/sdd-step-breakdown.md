@@ -33,7 +33,7 @@ Before writing steps, discover how this project runs tests, type-checks, and lin
 ## Step design principles
 
 - **One commit per step.** Each step produces a single atomic, committable change.
-- **A step is a functional unit, not a single test.** The right granularity is a service, an endpoint, a module, a data transformer — something that delivers a coherent piece of functionality. A step includes ALL the tests for that unit plus the implementation. The red/green cycle happens inside the step, not between steps. Never create a step for a single test case.
+- **A step is a functional unit, not a single test.** The right granularity is a service, an endpoint, a module, a data transformer — something that delivers a coherent piece of functionality. A step includes ALL the tests for that unit plus the implementation. Never create a step for a single test case.
 - **Dependency order.** Steps build on each other — types/interfaces before implementations, utilities before consumers, inner layers before outer layers.
 - **Glue steps are separate.** Wiring, configuration, and integration steps are their own steps, not mixed with logic steps.
 - **Each step is self-contained.** An implementer reading only that step (plus the plan context section) should know exactly what to do.

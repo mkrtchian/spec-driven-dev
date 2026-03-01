@@ -34,7 +34,7 @@ Once the plan looks good, clear context and run:
 The orchestrator executes each step from the plan:
 
 **For each step:**
-- **Implementer** (fresh agent): Writes failing tests first (for business logic), then implements. Runs tests, lint, typecheck. Does not commit.
+- **Implementer** (fresh agent): For business logic, writes all tests first (red), then implements to pass (green). For glue code, implements directly. Runs tests, lint, typecheck. Does not commit.
 - **Step hardener** (fresh agent): Catches drift from the plan and emergent issues (broken imports, type mismatches, edge cases), fixes them, and commits the step. Flags trade-offs it can't resolve.
 
 **After all steps:**

@@ -38,7 +38,7 @@ Before starting implementation, discover how this project runs tests, type-check
 
 You decide whether to use test-first or implement-first based on the step content and project context. Use your judgment:
 
-**Prefer test-first** when the step involves testable behavior — business logic, data transformations, validation, algorithms. For each test scenario: write the failing test → run tests (red) → implement to pass (green). Iterate until all scenarios are covered.
+**Prefer test-first** when the step involves testable behavior — business logic, data transformations, validation, algorithms. Write all tests for the step first → run tests to confirm they all fail (red) → implement the code to make them pass (green).
 
 **Prefer implement-first** when tests would add no value or aren't practical — type exports, wiring, configuration, glue code, or when the testing infrastructure doesn't support it. Add tests after if needed.
 
@@ -49,7 +49,7 @@ Never chain commands with `&&`. Each command must be a separate Bash call.
 ## Rules
 
 1. **Do NOT commit**: Leave all changes uncommitted. The step hardener will review and commit.
-2. **Verify before finishing**: Run the discovered verification commands (tests, lint, typecheck) once all test scenarios pass. Fix failures before declaring done.
+2. **Verify before finishing**: Run the discovered verification commands (tests, lint, typecheck) after implementation. Fix failures before declaring done.
 3. **Read before edit**: Never modify a file you haven't read first.
 4. **Follow the step/plan precisely**: If the step is wrong (wrong type, wrong path, method doesn't exist), fix it and note the deviation.
 
