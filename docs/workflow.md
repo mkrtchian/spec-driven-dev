@@ -38,7 +38,7 @@ The orchestrator executes each step from the plan:
 - **Drift checker** (fresh agent): Verifies the step produced exactly what the plan asked for — nothing more, nothing less. Flags issues if found.
 
 **After all steps:**
-- **Standards review** (fresh agent): Checks the full diff against project coding standards. Auto-applies mechanical fixes.
+- **Standards review** (fresh agent): Checks the full diff against project coding standards. Reports violations; the orchestrator applies fixes.
 - **Final review** (fresh agent): Reads the full plan and full diff. Produces remarks — coverage gaps, deviations, risks, test quality, things to watch.
 
 ## 3. Review and adjust
@@ -51,7 +51,7 @@ A single long conversation degrades in quality as context fills up. An agent tha
 
 Same principle as code review — the reviewer shouldn't be the author.
 
-There's also a token cost dimension. In skill-based frameworks, the orchestrating agent loads skill prompts into its own context, and that text is retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the orchestrator consumed ~1.2M tokens — 87% of total cost. When supporting prompts are co-located with the orchestrator and embedded inside `Task()` calls instead, the orchestrator never sees them — only short sub-agent results come back, and the orchestrator stays lightweight throughout.
+There's also a token cost dimension. In skill-based frameworks, the orchestrating agent loads skill prompts into its own context, and that text is retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the orchestrator consumed ~1.2M tokens — 87% of total cost. When agent prompts are resolved by the runtime instead (via `subagent_type`), the orchestrator never sees them — only short sub-agent results come back, and the orchestrator stays lightweight throughout.
 
 ## Why clear context between planning and implementation?
 

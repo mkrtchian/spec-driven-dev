@@ -64,7 +64,7 @@ A single agent asked to "implement this plan, follow TDD, and check coding stand
 
 Fresh context per concern. Same principle as code review — the reviewer shouldn't be the author.
 
-There's also a cost argument. In skill-based frameworks, the orchestrating agent loads skill prompts into its own context. That text is retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the orchestrator consumed ~1.2M tokens — 87% of total cost — while each subagent used only ~25k. When skills are embedded inside `Task()` calls instead, the orchestrator never sees them — only short sub-agent results come back, and the orchestrator stays lightweight throughout.
+There's also a cost argument. In skill-based frameworks, the orchestrating agent loads skill prompts into its own context. That text is retransmitted at every turn. In Superpowers' own test (2 tasks, 7 subagents), the orchestrator consumed ~1.2M tokens — 87% of total cost — while each subagent used only ~25k. When agent prompts are resolved by the runtime instead, the orchestrator never sees them — only short sub-agent results come back, and the orchestrator stays lightweight throughout.
 
 ## Design decisions
 
@@ -94,24 +94,24 @@ For a detailed comparison across 18 dimensions, see **[the full evaluation](docs
 
 ```
 skills/
-  write-plan/
-    SKILL.md                       # Orchestrator — discussion → plan → review → steps
-    plan-review-prompt.md          # Finds gaps, wrong assumptions, integration risks
-    plan-standards-prompt.md       # Checks plan against project coding conventions
-    step-breakdown-prompt.md       # Splits plan into atomic TDD implementation steps
-  implement-plan/
-    SKILL.md                       # Orchestrator — step-by-step execution → standards → final review
-    tdd-implementation-prompt.md   # Implements a step with TDD, runs verification, commits
-    step-verification-prompt.md    # Drift checker — verifies step output matches the plan
-    standards-review-prompt.md     # Reviews code diff against dynamically discovered standards
-    final-review-prompt.md         # Post-implementation review with remarks for the developer
+  write-plan/SKILL.md              # Orchestrator — discussion → plan → review → steps
+  implement-plan/SKILL.md          # Orchestrator — step-by-step execution → standards → final review
+
+agents/
+  sdd-plan-reviewer.md             # Finds gaps, wrong assumptions, integration risks
+  sdd-plan-standards.md            # Checks plan against project coding conventions
+  sdd-step-breakdown.md            # Splits plan into atomic TDD implementation steps
+  sdd-implementer.md               # Implements a step with TDD, runs verification, commits
+  sdd-drift-checker.md             # Drift checker — verifies step output matches the plan
+  sdd-standards-reviewer.md        # Reviews code diff against dynamically discovered standards
+  sdd-final-reviewer.md            # Post-implementation review with remarks for the developer
 
 docs/
-  workflow.md              # The full workflow explained
-  evaluation.md            # Comparison with GSD and Superpowers
+  workflow.md                      # The full workflow explained
+  evaluation.md                    # Comparison with GSD and Superpowers
 ```
 
-Each skill has supporting prompt files that are embedded into `Task()` calls — the orchestrator never loads them into its own context.
+Each agent is a custom agent definition distributed via the plugin. The orchestrator skills reference them by `subagent_type` — their prompt content is never loaded into the orchestrator's own context.
 
 ## Installation
 
@@ -121,12 +121,7 @@ Each skill has supporting prompt files that are embedded into `Task()` calls —
 /plugin install spec-driven-dev@mkrtchian
 ```
 
-Or manually — copy the skills to your project's `.claude/` directory:
-
-```bash
-mkdir -p .claude/skills
-cp -r skills/* .claude/skills/
-```
+The plugin system handles distribution of both skills and agent definitions. Manual installation is not supported — the skills reference agents via plugin-namespaced `subagent_type` which only resolves through the plugin system.
 
 ## Limitations
 
