@@ -66,7 +66,7 @@ Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="sdd-plan-reviewer",
+  subagent_type="spec-driven-dev:sdd-plan-reviewer",
   model="opus",
   description="Review plan for gaps",
   prompt="
@@ -89,7 +89,7 @@ Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="sdd-plan-standards",
+  subagent_type="spec-driven-dev:sdd-plan-standards",
   model="opus",
   description="Check plan standards",
   prompt="
@@ -112,7 +112,7 @@ Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="sdd-step-breakdown",
+  subagent_type="spec-driven-dev:sdd-step-breakdown",
   model="opus",
   description="Break plan into steps",
   prompt="

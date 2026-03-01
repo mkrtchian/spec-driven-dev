@@ -45,7 +45,7 @@ Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="sdd-implementer",
+  subagent_type="spec-driven-dev:sdd-implementer",
   model="opus",
   description="Implement step N",
   prompt="
@@ -79,7 +79,7 @@ Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="sdd-drift-checker",
+  subagent_type="spec-driven-dev:sdd-drift-checker",
   model="opus",
   description="Verify step N",
   prompt="
@@ -129,7 +129,7 @@ Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="sdd-standards-reviewer",
+  subagent_type="spec-driven-dev:sdd-standards-reviewer",
   model="opus",
   description="Review standards compliance",
   prompt="
@@ -157,7 +157,7 @@ Spawn a sub-agent:
 
 ```
 Task(
-  subagent_type="sdd-final-reviewer",
+  subagent_type="spec-driven-dev:sdd-final-reviewer",
   model="opus",
   description="Final implementation review",
   prompt="
