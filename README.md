@@ -4,17 +4,22 @@ Your plan, fresh agents, zero drift.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
-[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://claude.ai/claude-code)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://docs.anthropic.com/en/docs/claude-code)
 
-A structured workflow for AI-assisted development — from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan.
+A structured workflow for AI-assisted development — from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 7 agents, ~800 lines of markdown. No code, no config, no state directories — just prompts.
 
-## Quick start
+## Prerequisites
+
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (requires a Max/Team subscription or API key)
+
+## Install
 
 ```bash
-# In Claude Code
 /plugin marketplace add mkrtchian/spec-driven-dev
 /plugin install spec-driven-dev@mkrtchian
 ```
+
+## Usage
 
 ```bash
 # 1. Discuss the feature, draft and review the plan
@@ -24,10 +29,8 @@ A structured workflow for AI-assisted development — from discussion to reviewe
 
 # 3. Execute the plan step by step
 /clear
-/implement-plan plans/2025-03-01_my-feature.md
+/implement-plan plans/YYYY-MM-DD_my-feature.md
 ```
-
-The plugin system handles distribution of both skills and agent definitions. Manual installation is not supported — the skills reference agents via plugin-namespaced `subagent_type` which only resolves through the plugin system.
 
 ## The problem
 
@@ -38,34 +41,43 @@ AI coding assistants hit two walls on non-trivial changes:
 
 ## The approach
 
-Two skills, each orchestrating fresh agents with isolated context:
+Two skills, each orchestrating fresh agents with isolated context. Each agent starts with a fresh context window, focused on a single concern — no attention pollution between phases.
 
+```mermaid
+flowchart TD
+    subgraph "/write-plan"
+        A["Discussion with you"] --> B["Draft plan"]
+        B --> C["Review for gaps"]
+        C --> D["Check standards"]
+        D --> E["Break into steps"]
+    end
+
+    E --> F["You review the plan"]
+
+    subgraph "/implement-plan"
+        G["For each step"]
+        G --> H["Implement · TDD, tests, lint"]
+        H --> I["Harden · catch drift, fix, commit"]
+        I -- next step --> G
+
+        G -. all steps done .-> J["Enforce standards on full diff"]
+        J --> K["Final review · fix issues, flag trade-offs"]
+    end
+
+    F --> G
+
+    style A fill:#f3f0ff,stroke:#7c3aed
+    style F fill:#fef3c7,stroke:#d97706
+    style K fill:#ecfdf5,stroke:#059669
 ```
-/write-plan
-  You discuss the feature with the agent              ←  interactive
-  Agent drafts a detailed plan                        ←  plans/YYYY-MM-DD_feature.md
-  Fresh agent reviews plan for gaps                   ←  auto-corrects
-  Fresh agent checks plan against standards           ←  auto-corrects
-  Fresh agent breaks plan into fewest possible steps
-  You review the plan                                 ←  human in the loop
-
-/implement-plan plans/YYYY-MM-DD_feature.md
-  For each step:
-    Fresh agent implements (TDD, tests, lint)
-    Fresh agent hardens: catches drift, fixes issues, commits
-  Fresh agent enforces standards on full diff — fixes, verifies, commits
-  Fresh agent reviews, fixes obvious issues, flags trade-offs
-```
-
-Each agent starts with a fresh context window, focused on a single concern. No attention pollution between phases.
 
 ## Design decisions
 
-**Isolated passes.** A single agent asked to "implement this plan, follow TDD, and check coding standards" will do all three poorly. An agent that just spent 20 minutes implementing code is not in the right mindset to review standards — it's biased toward defending what it just wrote. Fresh context per concern — same principle as code review. For the detailed rationale (including the token cost dimension), see [workflow.md](docs/workflow.md#why-fresh-context-at-each-pass).
+**Isolated passes.** A single agent asked to "implement this plan, follow TDD, and check coding standards" will do all three poorly. An agent that just spent 20 minutes implementing code is not in the right mindset to review standards — it's biased toward defending what it just wrote. Fresh context per concern — same principle as code review. For the detailed rationale, see [workflow.md](docs/workflow.md#why-isolated-context).
 
-**Plans in git.** Your plan is a markdown file you commit, review in a PR, and share with your team. Standalone plan files have no shared state — two developers can plan and implement different features on different branches without interfering.
+**Plans in git.** Your plan is a plain markdown file — it goes through your normal PR review process. No special directories, no hidden state. Two developers can plan and implement different features on different branches without interfering. A plan typically covers: context and approach, files to modify with code details, what stays unchanged, edge cases, test scenarios, and verification commands.
 
-**No parallelism.** Sequential passes are simpler to reason about, debug, and review. Parallel execution saves time but adds coordination complexity that isn't worth it for single-feature work.
+**Sequential execution.** Each pass builds on verified state — simpler to reason about, debug, and review. Parallel execution saves time but adds coordination complexity that isn't worth it for single-feature work.
 
 **Dynamic discovery over configuration.** Skills detect your project's test runner, linter, and standards by finding and reading `CLAUDE.md` and other relevant files. Nothing is hardcoded to a stack.
 
@@ -73,53 +85,38 @@ Each agent starts with a fresh context window, focused on a single concern. No a
 
 **Step hardening.** After each implementation step, a fresh agent verifies alignment with the plan and fixes emergent issues. Problems are caught early, not discovered at the end.
 
+## Who is this for
+
+- Developers working on non-trivial features where AI "just do it" approaches produce drift and rework
+- Teams that do code review and want AI-generated code to go through the same rigor
+- Anyone who wants a predictable, inspectable AI workflow — plan in git, fresh agents, no hidden state
+
 ## What's in this repo
 
 ```
-skills/
-  write-plan/SKILL.md              # Orchestrator — discussion → plan → review → steps
-  implement-plan/SKILL.md          # Orchestrator — step-by-step execution → standards → final review
-
-agents/
-  sdd-plan-reviewer.md             # Finds gaps, wrong assumptions, integration risks
-  sdd-plan-standards.md            # Checks plan against project coding conventions
-  sdd-step-breakdown.md            # Splits plan into fewest possible implementation steps
-  sdd-implementer.md               # Implements a step (test-first by default), runs verification
-  sdd-step-hardener.md             # Verifies each step against the plan, fixes issues, commits
-  sdd-standards-enforcer.md        # Fixes coding standards violations, verifies, and commits
-  sdd-final-reviewer.md            # Fixes obvious issues, flags trade-offs for the developer
-
-docs/
-  workflow.md                      # The full workflow explained
-  evaluation.md                    # Comparison with GSD and Superpowers
+skills/          2 orchestrator skills (/write-plan, /implement-plan)
+agents/          7 custom agent definitions (reviewer, implementer, hardener, etc.)
+docs/            [Workflow guide](docs/workflow.md) and [framework comparison](docs/comparison.md)
 ```
 
-Each agent is a custom agent definition distributed via the plugin. The orchestrator skills reference them by `subagent_type` — their prompt content is never loaded into the orchestrator's own context.
+Each agent is a custom agent definition distributed via the plugin. The orchestrator skills reference them by `subagent_type` — their prompt content is never loaded into the orchestrator's own context. Manual installation is not supported; the plugin system handles resolution.
 
-## Limitations
+## Reliability
 
-These are prompts, not code. There are no hard guarantees that the agent will:
+In practice, well-structured prompts with Opus are followed 95%+ of the time — tests run, TDD is applied, standards are checked. The step hardener catches most of the remaining 5% by verifying each step with fresh context before committing.
 
-- Run tests / lint / type checking after every commit
-- Follow test first approach
-- Review carefully
+For hard guarantees on test/lint/typecheck, pair with git pre-commit hooks — agents trigger them on every commit.
 
-In practice, well-written prompts with Opus are followed 95%+ of the time. The step hardener catches most of the remaining 5%. For hard guarantees, use git pre-commit hooks (which agents trigger when they commit).
+## Comparison
 
-## Compared
+Tested on the same feature and repo as [GSD](https://github.com/gsd-build/get-shit-done) and [Superpowers](https://github.com/obra/superpowers). All three produced working implementations. The key difference is in the review layer: spec-driven-dev runs dedicated review passes with fresh agents that never saw the code being written — same principle as human code review, where the reviewer shouldn't be the author. The trade-off is speed (~22 min vs ~15 min for the others).
 
-Two major Claude Code frameworks — [GSD](https://github.com/gsd-build/get-shit-done), [Superpowers](https://github.com/obra/superpowers) — and spec-driven-dev were tested on the same feature in the same repo.
+For the full benchmark and detailed analysis, see the **[framework comparison](docs/comparison.md)**.
 
-|                               | GSD                        | Superpowers         | spec-driven-dev    |
-| ----------------------------- | -------------------------- | ------------------- | ------------------ |
-| Execution time                | ~15 min                    | ~15 min             | ~22 min            |
-| Context after execution       | 33%                        | 60%                 | 42%                |
-| Implementation steps          | 3 (2 in parallel)          | 5                   | 2                  |
-| Setup overhead                | ~7 min (reformatting plan) | None                | None               |
-| Human-in-the-loop during exec | No (review at end)         | Yes (every 2 steps) | No (review at end) |
+## Contributing
 
-GSD is the leanest on context. spec-driven-dev finishes at 42% — headroom that funds the correction passes (step hardening, standards enforcement, final review) that catch drift. For the full analysis, see **[the evaluation](docs/evaluation.md)**.
+Contributions welcome — [open an issue](https://github.com/mkrtchian/spec-driven-dev/issues) to discuss before submitting a PR.
 
 ## License
 
-MIT
+MIT — [Roman Mkrtchian](https://github.com/mkrtchian)
