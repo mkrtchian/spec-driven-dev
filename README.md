@@ -47,20 +47,20 @@ Two skills, each orchestrating fresh agents with isolated context. Each agent st
 flowchart TD
     subgraph "/write-plan"
         A["Discussion with you"] --> B["Draft plan"]
-        B --> C["Review for gaps"]
-        C --> D["Check standards"]
-        D --> E["Break into steps"]
+        B --> C["Review plan for additional gaps"]
+        C --> D["Check plan for coding standards"]
+        D --> E["Break into steps that fit in context"]
     end
 
     E --> F["You review the plan"]
 
     subgraph "/implement-plan"
         G["For each step"]
-        G --> H["Implement · TDD, tests, lint"]
-        H --> I["Harden · catch drift, fix, commit"]
+        G --> H["Implement · red-green for business logic"]
+        H --> I["Harden · catch drift, fix issues, commit"]
         I -- next step --> G
 
-        G -. all steps done .-> J["Enforce standards on full diff"]
+        G -. all steps done .-> J["Enforce coding standards on full diff"]
         J --> K["Final review · fix issues, flag trade-offs"]
     end
 
@@ -96,7 +96,7 @@ flowchart TD
 ```
 skills/          2 orchestrator skills (/write-plan, /implement-plan)
 agents/          7 custom agent definitions (reviewer, implementer, hardener, etc.)
-docs/            [Workflow guide](docs/workflow.md) and [framework comparison](docs/comparison.md)
+docs/            Workflow guide and framework comparison
 ```
 
 Each agent is a custom agent definition distributed via the plugin. The orchestrator skills reference them by `subagent_type` — their prompt content is never loaded into the orchestrator's own context. Manual installation is not supported; the plugin system handles resolution.
