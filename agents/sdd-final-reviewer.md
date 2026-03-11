@@ -58,7 +58,17 @@ Before starting the review, discover how this project runs tests, type-checks, a
 - Convention violations caught by project CLAUDE.md rules
 - Missing edge case handling that has a single correct solution
 
-After fixing, stage only the changed files, then run the discovered verification commands (tests, lint, typecheck). If verification passes, commit with message: `fix(review): <concise description of what was fixed>`. If verification fails, revert your fix and flag the issue as a trade-off instead.
+After fixing, stage only the changed files by name (never `git add -A` or `git add .`), then run the discovered verification commands (tests, lint, typecheck). If verification passes, commit following the conventions you discovered (see below). If verification fails, revert your fix and flag the issue as a trade-off instead.
+
+### Discover commit conventions
+
+Before committing, discover how this project commits — in priority order:
+
+1. **CLAUDE.md conventions**: Re-read `./CLAUDE.md` (and any nested `CLAUDE.md` in relevant directories). Look for commit-related instructions: commit message format, required trailers, commit scoping rules, forbidden patterns, or references to a `/commit` command/skill.
+2. **`/commit` skill or command**: Check if a `/commit` skill exists by reading `.claude/skills/commit/SKILL.md` or `.claude/commands/commit.md` (if either exists). If found, follow its commit message format, staging rules, and trailer requirements.
+3. **Developer config files**: Check for `commitlint.config.*`, `.commitlintrc.*`, `.czrc`, `.cz.json`, `changelog.config.js`, or a `commitlint`/`config.commitizen` section in `package.json`. If found, extract the allowed types, scopes, and format rules.
+
+Apply all discovered conventions, with earlier sources taking priority over later ones when they conflict. If nothing is found, fall back to standard conventional commits: `type(scope): description`.
 
 ### FLAG as remarks (do NOT fix):
 

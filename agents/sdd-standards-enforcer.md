@@ -57,13 +57,23 @@ Only flag these if the project's standards cover them:
 - **Naming**: Conventions for files, functions, variables, types
 - **Testing**: Test structure, naming, patterns
 
+## Discover commit conventions
+
+Before committing, discover how this project commits — in priority order:
+
+1. **CLAUDE.md conventions**: Re-read `./CLAUDE.md` (and any nested `CLAUDE.md` in relevant directories). Look for commit-related instructions: commit message format, required trailers, commit scoping rules, forbidden patterns (e.g., "no git add -A"), or references to a `/commit` command/skill.
+2. **`/commit` skill or command**: Check if a `/commit` skill exists by reading `.claude/skills/commit/SKILL.md` or `.claude/commands/commit.md` (if either exists). If found, follow its commit message format, staging rules, and trailer requirements.
+3. **Developer config files**: Check for `commitlint.config.*`, `.commitlintrc.*`, `.czrc`, `.cz.json`, `changelog.config.js`, or a `commitlint`/`config.commitizen` section in `package.json`. If found, extract the allowed types, scopes, and format rules.
+
+Apply all discovered conventions, with earlier sources taking priority over later ones when they conflict. If nothing is found, fall back to standard conventional commits: `type(scope): description`.
+
 ## Action
 
 When you find violations:
 
 1. Fix each violation directly in the source files.
 2. Run the discovered verification commands (tests, lint, typecheck). Fix any failures your changes introduced.
-3. Stage all changed files and commit: `refactor(standards): <concise description of what was fixed>`.
+3. Stage changed files by name (never `git add -A` or `git add .`) and commit following the conventions you discovered above.
 
 If verification fails and you cannot fix it, revert your changes and report the issues instead.
 

@@ -87,9 +87,19 @@ After all checks and fixes, run the discovered verification commands. If verific
 - Naming or style choices that are subjective
 - Issues that require context from the developer to resolve correctly
 
+## Discover commit conventions
+
+Before your first commit, discover how this project commits — in priority order:
+
+1. **CLAUDE.md conventions**: Re-read `./CLAUDE.md` (and any nested `CLAUDE.md` in relevant directories). Look for commit-related instructions: commit message format, required trailers, commit scoping rules, forbidden patterns (e.g., "no git add -A"), or references to a `/commit` command/skill.
+2. **`/commit` skill or command**: Check if a `/commit` skill exists by reading `.claude/skills/commit/SKILL.md` or `.claude/commands/commit.md` (if either exists). If found, follow its commit message format, staging rules, and trailer requirements.
+3. **Developer config files**: Check for `commitlint.config.*`, `.commitlintrc.*`, `.czrc`, `.cz.json`, `changelog.config.js`, or a `commitlint`/`config.commitizen` section in `package.json`. If found, extract the allowed types, scopes, and format rules.
+
+Apply all discovered conventions, with earlier sources taking priority over later ones when they conflict. If nothing is found, fall back to standard conventional commits: `type(scope): description`.
+
 ## Commit
 
-Once verification passes, stage all changed files and commit with a conventional commit message that describes the step: `feat(<scope>): <what the step achieved>`, `fix(<scope>):`, or `refactor(<scope>):`. The commit message should reflect the step as a whole, not just your fixes.
+Once verification passes, stage changed files and commit following the conventions you discovered above. The commit message should reflect the step as a whole, not just your fixes. Never use `git add -A` or `git add .` — stage files by name.
 
 If you could not get verification to pass, do NOT commit. Report the issues instead.
 
