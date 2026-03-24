@@ -2,7 +2,6 @@
 
 Your plan, fresh agents, zero drift.
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://docs.anthropic.com/en/docs/claude-code)
 
