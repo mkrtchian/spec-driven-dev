@@ -84,6 +84,10 @@ flowchart TD
 
 **Step hardening.** After each implementation step, a fresh agent verifies alignment with the plan and fixes emergent issues. Problems are caught early, not discovered at the end.
 
+## Example plans
+
+The [mcp-auditor](https://github.com/mkrtchian/mcp-auditor) project was built using this workflow. Its [plans/](https://github.com/mkrtchian/mcp-auditor/tree/main/plans) directory contains 15+ real plans, from domain modeling to CLI UX to OWASP mapping, showing what the output of `/write-plan` looks like in practice.
+
 ## Who is this for
 
 - Developers working on non-trivial features where AI "just do it" approaches produce drift and rework
