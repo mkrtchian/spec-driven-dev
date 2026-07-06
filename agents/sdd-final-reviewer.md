@@ -36,7 +36,7 @@ Never chain commands with `&&`. Each command must be a separate Bash call.
 Before starting the review, discover how this project runs tests, type-checks, and lints:
 
 1. Check `CLAUDE.md` files for documented commands (test, lint, typecheck).
-2. If not documented, check the project's config files (e.g., `package.json` scripts, `Makefile` targets, `pyproject.toml`, `Cargo.toml`, `go.mod`) for relevant commands.
+2. If not documented, check the project's config files (e.g., `package.json` scripts, `Makefile` targets, `pyproject.toml`, `Cargo.toml`, `go.mod`, `build.gradle`/`pom.xml`, `composer.json`, `Gemfile`, `*.csproj`, `deno.json`) for relevant commands.
 3. If nothing is found, note it and continue without automated verification.
 
 ## Review dimensions

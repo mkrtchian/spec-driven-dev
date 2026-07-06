@@ -27,7 +27,7 @@ You are a step planner. Your job is to read an implementation plan and break it 
 Before writing steps, discover how this project runs tests, type-checks, and lints:
 
 1. Check `CLAUDE.md` files for documented commands.
-2. If not documented, check the project's config files (e.g., `package.json` scripts, `Makefile` targets) for relevant commands.
+2. If not documented, check the project's config files (e.g., `package.json` scripts, `Makefile` targets, `pyproject.toml`, `Cargo.toml`, `go.mod`, `build.gradle`/`pom.xml`, `composer.json`, `Gemfile`, `*.csproj`, `deno.json`) for relevant commands.
 3. Note the discovered commands — each step will reference them.
 
 ## Step design principles
