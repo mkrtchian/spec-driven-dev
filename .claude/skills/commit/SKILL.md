@@ -39,7 +39,6 @@ Follow conventional commits: `type(scope): description`
 
 **Rules**:
 
-- Subject line only — never add a body. One line is enough.
 - Subject line: imperative mood, lowercase, no period
 - Scope is optional — use it when it clarifies (e.g., `feat(auth):`, `fix(parser):`)
 - Never use a scope just to have one
