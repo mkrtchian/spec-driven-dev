@@ -106,7 +106,7 @@ Each agent is a custom agent definition distributed via the plugin. The orchestr
 
 ## Reliability
 
-In practice, well-structured prompts with Opus are followed 95%+ of the time. Tests run, TDD is applied, standards are checked. The step hardener catches most of the remaining 5% by verifying each step with fresh context before committing.
+In practice, well-structured prompts are followed reliably, though not perfectly. Tests run, TDD is applied, standards are checked. The step hardener catches most of what slips through by verifying each step with fresh context before committing.
 
 For hard guarantees on test/lint/typecheck, pair with git pre-commit hooks. Agents trigger them on every commit.
 
