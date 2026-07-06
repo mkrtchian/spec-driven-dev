@@ -8,7 +8,7 @@ All three frameworks use the same underlying mechanism: Claude Code's `Task()` t
 
 ## When to use what
 
-**Use [GSD](https://github.com/gsd-build/get-shit-done)** if you're building a multi-phase project solo and want automated state tracking, parallel execution, and gap closure. Accept the `.planning/` overhead and the learning curve. In benchmarks, execution is fast (~15 min) with the lowest context usage (33%), but the reformatting overhead to enter GSD's format partially offsets the parallelization gains.
+**Use [GSD](https://github.com/open-gsd/gsd-core)** if you're building a multi-phase project solo and want automated state tracking, parallel execution, and gap closure. Accept the `.planning/` overhead and the learning curve. In benchmarks, execution is fast (~15 min) with the lowest context usage (33%), but the reformatting overhead to enter GSD's format partially offsets the parallelization gains.
 
 **Use [Superpowers](https://github.com/obra/superpowers)** if you want the strict quality controls, cross-platform support, and a mature, well-tested framework. Accept that it's opinionated about workflow and growing in complexity. In benchmarks, execution is fast (~15 min) with useful mid-execution checkpoints, but context usage is higher (60%) due to skill-based accumulation.
 
@@ -52,7 +52,7 @@ The three frameworks use different patterns for passing information between agen
 
 ## Framework details
 
-### GSD (Get Shit Done)
+### GSD (Get Shit Done, now GSD Core)
 
 **What it is**: A full project lifecycle manager: requirements gathering, roadmap creation, phase planning, parallel execution, verification, gap closure. Large codebase (markdown prompts + JavaScript tooling).
 
@@ -114,7 +114,7 @@ The three frameworks use different patterns for passing information between agen
 - Agent prompts are custom agent definitions, resolved by the runtime — never loaded into orchestrator context
 - Dynamically discovers project verification commands and project coding standards
 - Explicitly reads nested CLAUDE.md files
-- No hidden state, no special directories
+- No hidden state, no state directory
 
 **Weaknesses**:
 
