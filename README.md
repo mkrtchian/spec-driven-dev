@@ -74,7 +74,7 @@ flowchart TD
 
 **Isolated passes.** A single agent asked to "implement this plan, follow TDD, and check coding standards" will do all three poorly. An agent that just spent 20 minutes implementing code is not in the right mindset to review standards: it's biased toward defending what it just wrote. Fresh context per concern, same principle as code review. For the detailed rationale, see [workflow.md](docs/workflow.md#why-isolated-context).
 
-**Plans in git.** Your plan is a plain markdown file. It goes through your normal PR review process. No special directories, no hidden state. Two developers can plan and implement different features on different branches without interfering.
+**Plans in git.** Your plan is a plain markdown file in `plans/`. It goes through your normal PR review process. No state directory, no counters, no hidden state to keep in sync. Two developers can plan and implement different features on different branches without interfering.
 
 **Sequential execution.** Each pass builds on verified state. Simpler to reason about, debug, and review. Parallel execution saves time but adds coordination complexity that isn't worth it for single-feature work.
 
