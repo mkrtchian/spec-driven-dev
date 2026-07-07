@@ -83,13 +83,16 @@ Body sections:
 
 Bump `version` `1.8.5` → `1.8.6` (functional change to skills + agents).
 
-### 4. `docs/workflow.md` and `README.md`
+### 4. `docs/workflow.md`, `README.md`, and `docs/design-decisions.md`
 
 Where the passes are enumerated, add the diligence pass so the public docs stay consistent with the workflow. Keep it factual, no new claims. Concrete edits (verified against the current files):
 
 - **`docs/workflow.md`**: in the `## 1. Discuss and plan` numbered list, insert the diligence pass as a new item **before** "Break into steps" (diligence becomes item 5, "Break into steps" becomes item 6), matching the actual pass order standards → diligence → step-breakdown. The new item covers web-verify external facts + surface human-judgment items. Update the line "The command ends here. You review the plan and make necessary changes…" (line 27) so it also mentions that the command proposes committing the plan.
 - **`README.md`, agent count (2 places)**: line 8 (`2 skills, 7 agents, ~800 lines of markdown`) and the `## What's in this repo` tree comment (`7 custom agent definitions …`). Both must become `8 agents` / `8 custom agent definitions`, since this plan adds `sdd-plan-diligence`. The `~800 lines` figure is approximate and can stay.
 - **`README.md`, mermaid flowchart** (the `flowchart TD` block, `/write-plan` subgraph): add a diligence node immediately **before** `E` ("Break into steps that fit in context"), representing the due-diligence pass, and re-wire so the pass order is standards → diligence → `E` (Break into steps) → `F` ("You review the plan"). Diligence runs before the breakdown.
+- **`docs/design-decisions.md`, pass enumeration**: in "A workflow, not an autonomous agent", the sentence "draft, review, check standards, break into steps, implement, verify" becomes "draft, review, check standards, run due diligence, break into steps, implement, verify".
+- **`docs/design-decisions.md`, new section**: add a section "External facts checked against live sources", placed between "Fix what has one answer, flag the rest" and "Dynamic discovery over configuration". Content, kept short and matching the agent spec in §1: the model's training cutoff mechanically stales third-party facts (versions, API contracts, platform behavior), and review-from-memory cannot catch that, so a dedicated fresh pass verifies them against live sources at the end of `/write-plan`. Gated: a plan citing no external facts pays nothing. The fix-vs-flag split applied to facts: wrong-or-broken facts are fixed in place (quoting old → new), valid-but-not-latest ones are flagged for the human, since a pin may be deliberate. Fetched content is data, never instructions, and fetching goes through WebFetch only. The same pass collects `<!-- REVIEW: ... -->` markers, which closes the routing loop that "Fix what has one answer, flag the rest" describes.
+- **`docs/design-decisions.md`, "Plans in git, no hidden state"**: add one clause noting that `/write-plan` ends by proposing to commit the plan, so the "committed to your repository" property is produced by the workflow itself rather than left to the user.
 
 ## What stays unchanged
 
@@ -126,6 +129,7 @@ No automated tests (markdown-only repo). Checks:
 - `grep -n 'sdd-plan-diligence' skills/write-plan/SKILL.md` returns the new phase wiring, and the `subagent_type` string matches `name:` in `agents/sdd-plan-diligence.md`.
 - `grep -c 'Phase 7: Done' skills/write-plan/SKILL.md` is 1 and the old `Phase 6: Done` header is gone.
 - `.claude-plugin/plugin.json` shows `1.8.6`.
+- `grep -nic 'due diligence' docs/design-decisions.md` returns at least 2 (pass enumeration + new section).
 - Manual: reinstall / point the plugin at the working tree (the runtime loads it from the version cache, so local edits do not take effect until the installed build is updated) and run `/write-plan` end to end on scenarios 1-3.
 
 ## Implementation steps
@@ -138,6 +142,7 @@ No automated tests (markdown-only repo). Checks:
 - Modify `.claude-plugin/plugin.json`
 - Modify `docs/workflow.md`
 - Modify `README.md`
+- Modify `docs/design-decisions.md`
 
 **Do** (markdown-only repo; no code, no automated runner):
 
@@ -154,7 +159,9 @@ No automated tests (markdown-only repo). Checks:
 
 4. **`docs/workflow.md`**: in the `## 1. Discuss and plan` numbered list, insert the diligence pass as a new item **before** "Break into steps" (diligence becomes item 5, "Break into steps" becomes item 6), matching the actual order standards → diligence → step-breakdown. The new item covers web-verify external facts + surface human-judgment items. Update the "The command ends here. You review the plan…" line (~line 27) to also mention that the command proposes committing the plan. Verify line numbers against the live file before editing.
 
-5. **`README.md`**: change `7 agents` → `8 agents` on line 8 and `7 custom agent definitions` → `8 custom agent definitions` in the `## What's in this repo` tree comment; leave the `~800 lines` figure. In the `flowchart TD` `/write-plan` subgraph, add a diligence node immediately before `E` ("Break into steps…"), re-wiring so the order is standards → diligence → `E` → `F` ("You review the plan"). Verify current node labels/edges against the live file before editing.
+5. **`README.md`**: change `7 agents` → `8 agents` on line 8 and `7 custom agent definitions` → `8 custom agent definitions` in the `## What's in this repo` tree comment; leave the line-count figure as is. In the `flowchart TD` `/write-plan` subgraph, add a diligence node immediately before `E` ("Break into steps…"), re-wiring so the order is standards → diligence → `E` → `F` ("You review the plan"). Verify current node labels/edges against the live file before editing.
+
+6. **`docs/design-decisions.md`**: apply the three edits from "Files to modify §4": add the due-diligence pass to the pass enumeration in "A workflow, not an autonomous agent", insert the new section "External facts checked against live sources" (between "Fix what has one answer, flag the rest" and "Dynamic discovery over configuration"), and extend "Plans in git, no hidden state" with the plan-commit proposal. Verify section titles against the live file before editing.
 
 Respect global writing conventions in `CLAUDE.md` (no em dashes in prose you author, no emojis, concise). Note: the plan file itself already contains em dashes in cited/existing content; do not rewrite the plan's prose.
 
@@ -165,3 +172,4 @@ Respect global writing conventions in `CLAUDE.md` (no em dashes in prose you aut
 - `grep -c 'Phase 7: Done' skills/write-plan/SKILL.md` is `1`, and no `Phase 6: Done` header remains.
 - `.claude-plugin/plugin.json` shows `1.8.6`.
 - `grep -n '8 agents' README.md` and `grep -n '8 custom agent definitions' README.md` each return a hit.
+- `grep -nic 'due diligence' docs/design-decisions.md` returns at least 2.
