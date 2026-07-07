@@ -64,8 +64,4 @@ Note: there is no state tracking across sessions. If you stop mid-way and close 
 
 ## Why isolated context?
 
-**Between passes.** A single long conversation degrades in quality as context fills up. An agent that just spent 20 minutes implementing code is not in the right mindset to review coding standards: it's biased toward defending what it just wrote. A fresh agent with only the diff and the standards document has no such bias. Same principle as code review — the reviewer shouldn't be the author.
-
-There's also a token cost dimension. In skill-based frameworks, the orchestrating agent loads skill prompts into its own context, and that text is retransmitted at every turn. When agent prompts are resolved by the runtime instead (via `subagent_type`), the orchestrator never sees them — only short sub-agent results come back, and the orchestrator stays lightweight throughout.
-
-**Between planning and implementation.** The discussion phase fills context with exploration, questions, dead ends, and design alternatives. By the time you run `/implement-plan`, you want a fresh agent that reads only the plan — no residual bias from the discussion.
+See [design-decisions.md](design-decisions.md) for the rationale behind isolated contexts, sequential execution, and plans in git, with the sources that back each choice.
