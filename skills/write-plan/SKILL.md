@@ -100,11 +100,34 @@ Task(
 
 Report what was found/fixed to the user.
 
-## Phase 5: Step breakdown (fresh sub-agent)
+## Phase 5: Due diligence (fresh sub-agent)
 
 Display:
 ```
---- Pass 3: Step Breakdown ---
+--- Pass 3: Due Diligence ---
+Web-verifying external facts and surfacing decisions that need your judgment...
+```
+
+Spawn a sub-agent:
+
+```
+Task(
+  subagent_type="spec-driven-dev:sdd-plan-diligence",
+  model="opus",
+  description="Due-diligence pass",
+  prompt="
+    Plan to vet: $PLAN_PATH
+  "
+)
+```
+
+Present both buckets (`### FIXED` and `### REQUIRES YOUR JUDGMENT`) to the user verbatim: never drop, merge, or reword a finding. You may append a short annotation to an individual item that was already settled during the discussion (e.g. "already decided in discussion: you accepted this risk with mitigation X"), since you alone hold the discussion context and the isolated agent cannot know what the user already chose. The agent's original text always stays visible above your annotation. Show `REQUIRES YOUR JUDGMENT` prominently.
+
+## Phase 6: Step breakdown (fresh sub-agent)
+
+Display:
+```
+--- Pass 4: Step Breakdown ---
 Splitting plan into implementation steps...
 ```
 
@@ -123,7 +146,7 @@ Task(
 
 Report the step summary to the user.
 
-## Phase 6: Done
+## Phase 7: Done
 
 Display:
 
@@ -136,3 +159,10 @@ Steps: N total
 Review the plan and adjust as needed (manually or with my help).
 When ready, run: /implement-plan $PLAN_PATH
 ```
+
+Then:
+
+1. **Re-surface `REQUIRES YOUR JUDGMENT`**: repeat the diligence agent's `REQUIRES YOUR JUDGMENT` items as the things to resolve before implementing. If that bucket was empty, say so.
+2. **Propose committing the plan (never do it automatically)**: ask the user whether to commit the plan now, so it exists in git before `/implement-plan`.
+   - On **yes**: discover the project's commit convention using the same priority order the committing agents use (see `agents/sdd-standards-enforcer.md`, "Discover commit conventions"): CLAUDE.md rules first, then a `/commit` skill or command, then commitlint/commitizen config. Stage ONLY the plan file (never `git add -A` or `git add .`) and commit following that convention. If nothing more specific is discovered, fall back to `docs(plans): add <slug>`.
+   - On **no**: leave the plan uncommitted. `/implement-plan` still works on the uncommitted file.

@@ -22,9 +22,10 @@ The agent will:
 2. **Draft**: Write a detailed implementation plan to `plans/YYYY-MM-DD_feature-name.md`.
 3. **Review the plan** (fresh agent): Check for gaps, wrong assumptions, integration risks. Auto-corrects the plan.
 4. **Check standards** (fresh agent): Verify the plan respects project coding and testing conventions. Auto-corrects.
-5. **Break into steps** (fresh agent): Split the plan into the fewest ordered implementation steps that fit within an agent's context budget.
+5. **Run due diligence** (fresh agent): Web-verify the external facts the plan cites (versions, API contracts, action names) against live sources, and surface the risks and decisions you would implicitly approve by executing the plan. Fixes factual errors, flags judgment calls.
+6. **Break into steps** (fresh agent): Split the plan into the fewest ordered implementation steps that fit within an agent's context budget.
 
-The command ends here. You review the plan and make necessary changes — manually or by asking the agent to make the adjustments.
+The command ends here. You review the plan and make necessary changes (manually or by asking the agent to make the adjustments), and the command proposes committing the plan so it exists in git before you implement it.
 
 ## 2. Implement
 

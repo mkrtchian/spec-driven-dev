@@ -4,7 +4,7 @@ Part of [spec-driven-dev](../README.md). The short version lives in the [README]
 
 ## A workflow, not an autonomous agent
 
-The plugin is a fixed sequence of passes with human gates, not an agent that decides its own path. Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) draws this line: workflows fit tasks with a predictable structure, autonomous agents fit open-ended tasks where the path can't be known in advance. Turning a discussed feature into reviewed code has a predictable structure: draft, review, check standards, break into steps, implement, verify. A fixed sequence makes each run predictable, debuggable, and cheap to reason about.
+The plugin is a fixed sequence of passes with human gates, not an agent that decides its own path. Anthropic's [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) draws this line: workflows fit tasks with a predictable structure, autonomous agents fit open-ended tasks where the path can't be known in advance. Turning a discussed feature into reviewed code has a predictable structure: draft, review, check standards, run due diligence, break into steps, implement, verify. A fixed sequence makes each run predictable, debuggable, and cheap to reason about.
 
 ## Why not just plan mode?
 
@@ -50,6 +50,12 @@ Every review pass separates two kinds of findings. Corrections with a single rig
 
 Cognition calls the equivalent mechanism in Devin the "communication bridge": the filter that decides which review findings deserve action, using context the reviewer doesn't have ([Multi-agents working](https://cognition.ai/blog/multi-agents-working)). This plugin splits that filter in two. Mechanical fixes are the ones a reviewer can verify from the artifact alone, so they are safe to apply without the discussion context, and the plan gate plus per-step commits keep a misclassified fix visible and revertable. Judgment calls go to the person who has the discussion context. On the happy path you're interrupted once per command, at the end. Agents stop mid-run only on failures they can't resolve. The fewer the interruptions, the more attention each one gets.
 
+## External facts checked against live sources
+
+The model's training cutoff mechanically stales third-party facts: library and CI action versions, API contracts, platform behavior. A review that runs from memory cannot catch that staleness, because a stale fact looks exactly like a correct one. So a dedicated due diligence pass runs at the end of `/write-plan`, after review and standards, and verifies the plan's external facts against live sources. It is gated: a plan that cites no external facts pays nothing for it.
+
+The pass applies the same fix-vs-flag split as the review passes, this time to facts. A fact that is wrong or broken (a version, endpoint, or field that does not exist or is nonfunctional) has one right answer, so it is fixed in place, quoting old → new so the human can audit the edit. A fact that is merely valid-but-not-latest (a pinned `v4` when `v7` exists) is flagged, not changed: the pin may be deliberate, and only the human holds the discussion context to decide. Fetched web content is treated as data, never as instructions, and fetching goes through `WebFetch` only, whose summarizing layer is the mitigation between untrusted pages and the agent's context. The same pass also collects the `<!-- REVIEW: ... -->` markers earlier passes leave behind, which closes the routing loop "Fix what has one answer, flag the rest" describes: the markers finally reach the human before execution.
+
 ## Dynamic discovery over configuration
 
 The agents hardcode nothing about your stack. Each one discovers how the project works at run time: documented commands in `CLAUDE.md` first, then the project's own config files (`package.json` scripts, `Makefile` targets, `pyproject.toml`, `Cargo.toml`, `go.mod`, and equivalents) for tests, lint, and typecheck. Committing agents discover commit conventions the same way: `CLAUDE.md` rules first, then a `/commit` skill if the project has one, then commitlint or commitizen config. The alternative, a plugin config file mapping each project to its commands, would be one more artifact to write, keep in sync, and get stale. Reading the project beats configuring the plugin.
@@ -64,7 +70,7 @@ The implementer never commits. After each step, a fresh agent (the step hardener
 
 ## Plans in git, no hidden state
 
-The plan is an ordinary markdown file, committed to your repository, reviewed like any other change. No state directory, no database, no memory shared between agents outside artifacts you can read. Everything the workflow will do is inspectable before it runs, and everything it did is in git history after.
+The plan is an ordinary markdown file, committed to your repository, reviewed like any other change. No state directory, no database, no memory shared between agents outside artifacts you can read. Everything the workflow will do is inspectable before it runs, and everything it did is in git history after. To make the "committed to your repository" property real rather than a suggestion, `/write-plan` ends by proposing to commit the plan (staging only the plan file, never automatically): the workflow itself produces the committed artifact instead of leaving it to the user to remember.
 
 This also supports the supervision posture [Kief Morris describes](https://martinfowler.com/articles/exploring-gen-ai/humans-and-agents.html) for agentic delivery. When the output is wrong you can fix the plan directly, which Morris calls working "in the loop". Or you can fix the prompts and process that produced it, working "on the loop", where the correction improves every future run. Plans and prompts both being plain files in git is what keeps that second option cheap. Per-step commits give recoverable checkpoints, the same discipline Anthropic found necessary for [long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents): incremental progress, descriptive commits, a clean state after every session.
 

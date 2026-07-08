@@ -5,7 +5,7 @@ Your plan, fresh agents, zero drift.
 [![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://docs.anthropic.com/en/docs/claude-code)
 
-A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 7 agents, ~900 lines of markdown. No code, no config, no state directories. Just prompts.
+A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 8 agents, ~900 lines of markdown. No code, no config, no state directories. Just prompts.
 
 ## Prerequisites
 
@@ -48,7 +48,8 @@ flowchart TD
         A["Discussion with you"] --> B["Draft plan"]
         B --> C["Review plan for additional gaps"]
         C --> D["Check plan for coding standards"]
-        D --> E["Break into steps that fit in context"]
+        D --> DD["Due diligence · verify facts, flag risks"]
+        DD --> E["Break into steps that fit in context"]
     end
 
     E --> F["You review the plan"]
@@ -98,7 +99,7 @@ The [mcp-auditor](https://github.com/mkrtchian/mcp-auditor) project was built us
 
 ```
 skills/          2 orchestrator skills (/write-plan, /implement-plan)
-agents/          7 custom agent definitions (reviewer, implementer, hardener, etc.)
+agents/          8 custom agent definitions (reviewer, implementer, hardener, etc.)
 docs/            Workflow guide, design decisions, framework comparison
 ```
 
