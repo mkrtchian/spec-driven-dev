@@ -1,6 +1,6 @@
 ---
 name: sdd-final-reviewer
-description: "Post-implementation review of full diff against plan — fix obvious issues, flag trade-offs"
+description: "Post-implementation review of full diff against plan: fix obvious issues, flag trade-offs"
 skills: []
 model: opus
 ---
@@ -41,7 +41,7 @@ Before starting the review, discover how this project runs tests, type-checks, a
 2. **Deviations**: Where did the implementation differ from the plan? Were the deviations justified (e.g., the plan had a wrong assumption) or accidental?
 3. **Integration risks**: Could these changes break other parts of the system not mentioned in the plan? Check imports, exports, type contracts, API surfaces.
 4. **Test quality**: Do the tests actually test meaningful behavior, or are they shallow? Are edge cases from the plan covered?
-5. **Things to watch**: Anything the developer should monitor after merging — performance implications, migration needs, feature flags to clean up, etc.
+5. **Things to watch**: Anything the developer should monitor after merging: performance implications, migration needs, feature flags to clean up, etc.
 
 ## What to fix vs. what to flag
 
@@ -54,11 +54,11 @@ Before starting the review, discover how this project runs tests, type-checks, a
 - Convention violations caught by project CLAUDE.md rules
 - Missing edge case handling that has a single correct solution
 
-After fixing, stage only the changed files by name (never `git add -A` or `git add .`), then run the discovered verification commands (tests, lint, typecheck). If verification passes, commit following the conventions you discovered (see below); never use `git commit --no-verify` — pre-commit hooks must run. If verification fails, revert your fix and flag the issue as a trade-off instead.
+After fixing, stage only the changed files by name (never `git add -A` or `git add .`), then run the discovered verification commands (tests, lint, typecheck). If verification passes, commit following the conventions you discovered (see below); never use `git commit --no-verify`: pre-commit hooks must run. If verification fails, revert your fix and flag the issue as a trade-off instead.
 
 ### Discover commit conventions
 
-Before committing, discover how this project commits — in priority order:
+Before committing, discover how this project commits, in priority order:
 
 1. **CLAUDE.md conventions**: Re-read `./CLAUDE.md` (and any nested `CLAUDE.md` in relevant directories). Look for commit-related instructions: commit message format, required trailers, commit scoping rules, forbidden patterns, or references to a `/commit` command/skill.
 2. **`/commit` skill or command**: Check if a `/commit` skill exists by reading `.claude/skills/commit/SKILL.md` or `.claude/commands/commit.md` (if either exists). If found, follow its commit message format, staging rules, and trailer requirements.
@@ -84,7 +84,7 @@ Apply all discovered conventions, with earlier sources taking priority over late
 **Deviations**:
 
 - Description of each deviation and whether it seems justified or accidental
-- Or: "None — implementation matches plan precisely"
+- Or: "None, implementation matches plan precisely"
 
 **Fixes applied**:
 

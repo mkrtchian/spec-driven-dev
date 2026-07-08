@@ -49,7 +49,7 @@ The orchestrator executes each step from the plan:
 
 ## 3. Review and adjust
 
-Check the result. The plan is still there as the reference — you can point to specific sections and ask for adjustments.
+Check the result. The plan is still there as the reference: you can point to specific sections and ask for adjustments.
 
 ### When things go wrong
 
@@ -57,11 +57,11 @@ The orchestrator stops and asks you when an agent can't resolve an issue on its 
 
 - **Implementer reports it is blocked** (verification cannot be made to pass, or the step's approach is invalid): the orchestrator presents the block and asks how to proceed, without hardening the step.
 - **Hardener finds issues it can't fix** (architectural trade-offs, ambiguous requirements): you choose to fix, skip, or stop.
-- **Standards enforcer finds unresolvable violations**: same — you decide.
+- **Standards enforcer finds unresolvable violations**: same, you decide.
 
 In all cases, the plan is still the reference. You can adjust it, ask the agent to retry a step, or finish manually.
 
-Note: there is no state tracking across sessions. If you stop mid-way and close the session, you restart `/implement-plan` from the beginning. Already-committed steps are in git — the agents will see the existing code and tests, but the orchestrator won't skip steps automatically.
+Note: there is no state tracking across sessions. If you stop mid-way and close the session, you restart `/implement-plan` from the beginning. Already-committed steps are in git: the agents will see the existing code and tests, but the orchestrator won't skip steps automatically.
 
 ## Why isolated context?
 

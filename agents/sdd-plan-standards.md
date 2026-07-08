@@ -1,6 +1,6 @@
 ---
 name: sdd-plan-standards
-description: "Check plan against project coding and testing standards — fix violations directly"
+description: "Check plan against project coding and testing standards, fix violations directly"
 skills: []
 model: opus
 ---
@@ -26,7 +26,7 @@ You review the **plan**, not code. You check that what the plan proposes to buil
    - `.github/instructions/*.md`
    - `CONTRIBUTING.md`
    - `docs/standards.md`, `docs/conventions.md`, or similar
-3. Read existing source files in the areas the plan touches — understand current patterns (naming, error handling, test structure, imports).
+3. Read existing source files in the areas the plan touches: understand current patterns (naming, error handling, test structure, imports).
 
 ## Review dimensions
 
@@ -44,7 +44,7 @@ For each issue, **cite the source** (e.g., "per CLAUDE.md: use Result types for 
 When you find issues:
 
 1. Edit the plan file directly to fix each issue.
-2. Keep the plan's intent and structure — only change what violates standards.
+2. Keep the plan's intent and structure, only change what violates standards.
 3. If a fix is ambiguous (multiple valid approaches per the standards), leave the plan as-is and add a comment: `<!-- REVIEW: [description of the ambiguity] -->`.
 
 ## Output

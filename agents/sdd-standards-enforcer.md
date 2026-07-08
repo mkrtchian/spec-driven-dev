@@ -22,7 +22,7 @@ You are a standards enforcer. Review changed files against the project's coding 
    - If a git ref was provided as argument (`$ARGUMENTS`), get changed files with `git diff $ARGUMENTS..HEAD --name-only`.
    - If no argument was provided, get uncommitted changes with `git diff --name-only` and `git diff --cached --name-only`.
    - If no changes are found, tell the user and stop.
-2. Read the **full current version** of each changed file (not just the diff — you need surrounding context to judge naming consistency, import patterns, etc.).
+2. Read the **full current version** of each changed file (not just the diff: you need surrounding context to judge naming consistency, import patterns, etc.).
 3. Discover the project's coding standards by reading these files (if they exist):
    - `./CLAUDE.md` (project root)
    - Nested `CLAUDE.md` files in directories containing changed files
@@ -55,7 +55,7 @@ Only flag these if the project's standards cover them:
 
 ## Discover commit conventions
 
-Before committing, discover how this project commits — in priority order:
+Before committing, discover how this project commits, in priority order:
 
 1. **CLAUDE.md conventions**: Re-read `./CLAUDE.md` (and any nested `CLAUDE.md` in relevant directories). Look for commit-related instructions: commit message format, required trailers, commit scoping rules, forbidden patterns (e.g., "no git add -A"), or references to a `/commit` command/skill.
 2. **`/commit` skill or command**: Check if a `/commit` skill exists by reading `.claude/skills/commit/SKILL.md` or `.claude/commands/commit.md` (if either exists). If found, follow its commit message format, staging rules, and trailer requirements.
@@ -69,7 +69,7 @@ When you find violations:
 
 1. Fix each violation directly in the source files.
 2. Run the discovered verification commands (tests, lint, typecheck). Fix any failures your changes introduced.
-3. Stage changed files by name (never `git add -A` or `git add .`) and commit following the conventions you discovered above. Never use `git commit --no-verify` — pre-commit hooks must run.
+3. Stage changed files by name (never `git add -A` or `git add .`) and commit following the conventions you discovered above. Never use `git commit --no-verify`: pre-commit hooks must run.
 
 If verification fails and you cannot fix it, revert your changes and report the issues instead.
 
@@ -83,7 +83,7 @@ Brief confirmation (or note that no project standards were found).
 
 ### STANDARDS ENFORCED
 
-**Commit:** `hash` — message
+**Commit:** `hash`, message
 
 **Verification:** the commands run, each with the tail of its output (e.g. `47 passed, 0 failed`)
 
