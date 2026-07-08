@@ -52,9 +52,9 @@ Task(
 
     {content of step N from the plan}
 
-    ## Full plan context
+    ## Plan file path
 
-    {content of the plan file, for reference — but focus on the step above}
+    $ARGUMENTS
   "
 )
 ```
