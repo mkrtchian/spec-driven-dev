@@ -115,7 +115,7 @@ For hard guarantees on test/lint/typecheck, pair with git pre-commit hooks. Agen
 
 Tested on the same feature and repo as [GSD](https://github.com/open-gsd/gsd-core) and [Superpowers](https://github.com/obra/superpowers). All three produced working implementations. The key difference is in the review layer: spec-driven-dev runs dedicated review passes with fresh agents that never saw the code being written. Same principle as human code review, where the reviewer shouldn't be the author. The trade-off is speed (~22 min vs ~15 min for the others).
 
-For the full benchmark and detailed analysis, see the **[framework comparison](docs/comparison.md)**.
+For the full benchmark and detailed analysis, see the **[framework comparison](docs/comparison.md)** (a March 2026 snapshot, not continuously updated).
 
 ## Contributing
 

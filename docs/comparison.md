@@ -103,7 +103,7 @@ The three frameworks use different patterns for passing information between agen
 
 ### spec-driven-dev
 
-**What it is**: ~800 lines of markdown across 2 orchestrator skills and 7 custom agent definitions. A full plan-first workflow: discussion → plan → review → step-by-step execution with step hardening.
+**What it is**: a full plan-first workflow: discussion → plan → review → step-by-step execution with step hardening. At benchmark time (March 2026), ~800 lines of markdown across 2 orchestrator skills and 7 custom agent definitions.
 
 **Strengths**:
 

@@ -78,7 +78,7 @@ This also supports the supervision posture [Kief Morris describes](https://marti
 
 The guarantees are prompt-strength, not machine-strength. TDD, standards checks, and verification runs are instructions that models follow reliably in practice, not enforced gates. For stronger guarantees on tests, lint, and typecheck, pair the workflow with pre-commit hooks: agents trigger them on every commit.
 
-Isolation is paid in wall-clock time and tokens. On the benchmark feature, the full workflow took ~22 min against ~15 min for frameworks without isolated review passes, with 6 agent invocations for a 2-step plan (see the [framework comparison](comparison.md)). The claim is quality and reviewability, not speed: net time saved against plain AI-assisted coding is unmeasured.
+Isolation is paid in wall-clock time and tokens. On the benchmark feature, the full workflow took ~22 min against ~15 min for frameworks without isolated review passes, with 6 agent invocations for a 2-step plan (see the [framework comparison](comparison.md), a March 2026 snapshot). The claim is quality and reviewability, not speed: net time saved against plain AI-assisted coding is unmeasured.
 
 The workflow is sized for multi-file features. For a single-file fix or a small refactor, the overhead exceeds the benefit: use plain Claude Code, or plan mode. One fixed workflow can't fit every size of change, a point [Birgitta Böckeler's analysis](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) of spec-driven tools makes well, so this one doesn't try.
 
