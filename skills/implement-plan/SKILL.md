@@ -11,13 +11,19 @@ Execute a reviewed plan through its implementation steps. Each step gets a dedic
 
 ## Context
 
-Plan file: $ARGUMENTS
+The plan to implement is given as `$ARGUMENTS`. It may be a direct path, a natural-language reference (e.g. "the plan we just wrote"), or empty.
 
-If no argument provided, use AskUserQuestion to ask: "Which plan file should I implement?" with a hint to provide the path.
+## 0. Validate and resolve the plan path
 
-## 0. Validate
+Resolve `$ARGUMENTS` to a concrete plan file:
 
-Read the plan file at $ARGUMENTS. If it doesn't exist, error and stop.
+1. If `$ARGUMENTS` is a path to an existing file, use it directly.
+2. If `$ARGUMENTS` is empty or is a phrase rather than a path (e.g. "the plan we just wrote", "the latest one"), interpret it and locate the intended plan among `plans/*.md` (for "the latest" or "the one we just wrote", the most recently modified `plans/*.md` file). This is a guess that launches a full implementation run, so state the resolved path back to the user and confirm before proceeding.
+3. If it cannot be resolved to a single file (`$ARGUMENTS` looks like a path but the file does not exist, `plans/` is empty or absent, nothing matches, or several plausibly match), use AskUserQuestion to ask: "Which plan file should I implement?" with a hint to provide the path.
+
+From this point on, `$PLAN_PATH` refers to this resolved plan file. Use `$PLAN_PATH`, not the raw `$ARGUMENTS`, everywhere below.
+
+Read the plan file at `$PLAN_PATH`. If it doesn't exist, error and stop.
 
 Check that the plan has an `## Implementation steps` section. If not, tell the user: "This plan has no implementation steps. Run `/write-plan` first, or add an `## Implementation steps` section manually."
 
@@ -54,7 +60,7 @@ Task(
 
     ## Plan file path
 
-    $ARGUMENTS
+    $PLAN_PATH
   "
 )
 ```
@@ -83,7 +89,7 @@ Task(
 
     ## Plan file path
 
-    $ARGUMENTS
+    $PLAN_PATH
   "
 )
 ```
@@ -148,7 +154,7 @@ Task(
   model="opus",
   description="Final implementation review",
   prompt="
-    Plan file: $ARGUMENTS
+    Plan file: $PLAN_PATH
     Baseline: $BASELINE_SHA
   "
 )
@@ -161,7 +167,7 @@ Display:
 ```
 --- Implementation Complete ---
 
-Plan: $ARGUMENTS
+Plan: $PLAN_PATH
 
 Steps:
   Step 1: [title] — [committed / committed with N fixes / issues: action taken]
