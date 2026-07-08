@@ -65,7 +65,10 @@ Task(
 )
 ```
 
-If the implementer reports FAIL on verification: present to user, ask how to proceed.
+Handle the implementer's exit state:
+
+- **IMPLEMENTATION COMPLETE**: proceed to hardening (§1b).
+- **IMPLEMENTATION BLOCKED**: do NOT spawn the hardener. Present the block to the developer (what blocks, what was tried, state of the tree) and ask how to proceed. Keep it open-ended: the developer may rework the plan and retry the step, unblock the tree manually, or stop. Do not offer a skip-and-continue — a blocked step usually leaves later dependent steps unbuildable.
 
 ### 1b. Step hardening (fresh sub-agent)
 
@@ -99,8 +102,8 @@ Handle the result:
 - **STEP COMMITTED**: Continue to next step.
 - **STEP COMMITTED WITH FIXES**: Note the fixes applied, continue to next step.
 - **ISSUES FOUND**: No commit was made. Present the issues to the user. Ask: "Fix these issues, skip them, or stop implementation?"
-  - If fix: spawn another implementer to address the issues, then re-harden
-  - If skip: the orchestrator commits as-is, then continue to next step
+  - If fix: spawn another implementer to address the issues. If that implementer returns `IMPLEMENTATION BLOCKED`, handle it exactly as §1a — present the block to the developer and ask how to proceed, and do NOT re-harden a blocked tree. Otherwise (`IMPLEMENTATION COMPLETE`), re-harden.
+  - If skip: discover the project's commit conventions using the same priority order as `agents/sdd-standards-enforcer.md` "Discover commit conventions" (CLAUDE.md rules first, then a `/commit` skill or command, then commitlint/commitizen config, else standard conventional commits). Stage only the changed files by name (never `git add -A` or `git add .`), commit following those conventions, then continue to next step.
   - If stop: go directly to the summary
 
 Record the step result (committed / committed with fixes / issues found + action taken).
@@ -177,6 +180,9 @@ Steps:
 Standards enforcement: [COMPLIANT / N fixes applied]
 
 Commits: (list all commits from $BASELINE_SHA to HEAD with hash and message)
+
+Hardener remarks:
+[remarks reported by the hardener across steps, collected from each STEP COMMITTED WITH FIXES; or "None"]
 
 Final review remarks:
 [remarks from the final review agent]

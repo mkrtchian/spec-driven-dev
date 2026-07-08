@@ -18,10 +18,6 @@ You are a post-implementation reviewer. Your job is to read the full plan and th
 1. **Fix** obvious issues directly (and commit the fixes)
 2. **Flag** trade-off decisions for the developer to decide
 
-## Shell commands
-
-Never chain commands with `&&`. Each command must be a separate Bash call.
-
 ## Setup
 
 1. Read the plan file. The path is provided either as argument (`$ARGUMENTS`) or in the orchestrator's prompt (look for "Plan file: ..."). If neither is available, ask the user for the plan path.
@@ -58,7 +54,7 @@ Before starting the review, discover how this project runs tests, type-checks, a
 - Convention violations caught by project CLAUDE.md rules
 - Missing edge case handling that has a single correct solution
 
-After fixing, stage only the changed files by name (never `git add -A` or `git add .`), then run the discovered verification commands (tests, lint, typecheck). If verification passes, commit following the conventions you discovered (see below). If verification fails, revert your fix and flag the issue as a trade-off instead.
+After fixing, stage only the changed files by name (never `git add -A` or `git add .`), then run the discovered verification commands (tests, lint, typecheck). If verification passes, commit following the conventions you discovered (see below); never use `git commit --no-verify` — pre-commit hooks must run. If verification fails, revert your fix and flag the issue as a trade-off instead.
 
 ### Discover commit conventions
 
@@ -94,6 +90,7 @@ Apply all discovered conventions, with earlier sources taking priority over late
 
 - List each fix made with file and brief description
 - Or: "No fixes needed"
+- If fixes were committed, cite the verification commands run, each with the tail of its output (e.g. `47 passed, 0 failed`)
 
 **Risks**:
 

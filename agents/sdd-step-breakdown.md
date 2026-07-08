@@ -52,14 +52,26 @@ For each step, provide:
 
 ## Action
 
-Append a `## Implementation steps` section to the plan file with all steps in order.
+Appending steps applies only when the plan is concrete enough to cut into ordered, executable steps. In that case, append a `## Implementation steps` section to the plan file with all steps in order. If the plan already has an `## Implementation steps` section, replace it entirely.
 
-If the plan already has an `## Implementation steps` section, replace it entirely.
+If the plan is too underspecified to break down, do NOT append or modify the `## Implementation steps` section. Return `PLAN TOO AMBIGUOUS TO BREAK DOWN` instead.
 
 ## Output
+
+Return ONE of:
 
 ### STEPS ADDED
 
 - **Total steps**: N
 - Brief summary of the step sequence
 - If more than 1 step: why the plan could not fit in a single step
+
+### PLAN TOO AMBIGUOUS TO BREAK DOWN
+
+Returned when the plan is too underspecified to cut into concrete, executable steps. The `## Implementation steps` section was not appended or modified.
+
+**What is unclear:**
+- The specific gaps that block a breakdown
+
+**What the plan must resolve:**
+- What the plan needs to specify before a breakdown is possible

@@ -76,7 +76,7 @@ This also supports the supervision posture [Kief Morris describes](https://marti
 
 ## Limits
 
-The guarantees are prompt-strength, not machine-strength. TDD, standards checks, and verification runs are instructions that models follow reliably in practice, not enforced gates. For stronger guarantees on tests, lint, and typecheck, pair the workflow with pre-commit hooks: agents trigger them on every commit.
+The guarantees are prompt-strength, not machine-strength. TDD, standards checks, and verification runs are instructions that models follow reliably in practice, not enforced gates. For stronger guarantees on tests, lint, and typecheck, pair the workflow with pre-commit hooks: agents trigger them on every commit, and the committing agents are instructed never to bypass hooks with `--no-verify`, so the pairing is not defeated in-prompt.
 
 Isolation is paid in wall-clock time and tokens. On the benchmark feature, the full workflow took ~22 min against ~15 min for frameworks without isolated review passes, with 6 agent invocations for a 2-step plan (see the [framework comparison](comparison.md), a March 2026 snapshot). The claim is quality and reviewability, not speed: net time saved against plain AI-assisted coding is unmeasured.
 

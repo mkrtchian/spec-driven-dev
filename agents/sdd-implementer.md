@@ -42,26 +42,39 @@ Decide test-first vs implement-first **before writing any code**, then follow th
 
 **Exception: implement-first.** Only when tests would add no value or aren't practical — type exports, wiring, configuration, glue code, or when the testing infrastructure doesn't support it. Add tests after if needed.
 
-## Shell commands
-
-Never chain commands with `&&`. Each command must be a separate Bash call.
-
 ## Rules
 
 1. **Do NOT commit**: Leave all changes uncommitted. The step hardener will review and commit.
-2. **Verify before finishing**: Run the discovered verification commands (tests, lint, typecheck) after implementation. Fix failures before declaring done.
+2. **Verify before finishing**: Run the discovered verification commands (tests, lint, typecheck) after implementation. Fix failures before declaring done. If verification cannot be made to pass after reasonable attempts, stop trying and return `IMPLEMENTATION BLOCKED` (see Output) — do not loop, and do not declare `IMPLEMENTATION COMPLETE` with a buried `FAIL`.
 3. **Read before edit**: Never modify a file you haven't read first.
-4. **Follow the step/plan precisely**: If the step is wrong (wrong type, wrong path, method doesn't exist), fix it and note the deviation.
+4. **Follow the step/plan precisely**: If the step is wrong in a local, mechanical way (wrong type, wrong path, method doesn't exist), fix it and note the deviation. But if the step's whole approach does not work (not a local fix — the design itself is invalid against the real code), do not force it: return `IMPLEMENTATION BLOCKED` explaining why the approach fails.
 
 ## Output
 
-When done, return:
+Return exactly ONE of the two states below.
 
 ### IMPLEMENTATION COMPLETE
+
+Returned only when verification passes, or when no verification commands were discovered.
 
 **Deviations from plan:**
 - Description of what differed and why (or "None")
 
 **Verification:**
-- List each verification command run and its result (PASS/FAIL)
+- List each verification command run, and alongside it quote the tail of the actual command output (e.g. `47 passed, 0 failed`), not just a `PASS`/`FAIL` verdict.
 - If no verification commands were found, state: "No project verification commands discovered"
+
+### IMPLEMENTATION BLOCKED
+
+Returned when the step cannot be brought to a passing state, for either reason:
+(a) verification fails and you cannot fix it, or
+(b) the step's approach is fundamentally invalid (not a local mechanical error).
+
+**What blocks:**
+- The specific obstacle
+
+**What was tried:**
+- The attempts made
+
+**State of the tree:**
+- What was changed and left uncommitted (or "no changes made")

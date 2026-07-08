@@ -55,7 +55,7 @@ Check the result. The plan is still there as the reference — you can point to 
 
 The orchestrator stops and asks you when an agent can't resolve an issue on its own:
 
-- **Implementer fails verification** (tests, lint, or typecheck don't pass): the orchestrator presents the failure and asks how to proceed.
+- **Implementer reports it is blocked** (verification cannot be made to pass, or the step's approach is invalid): the orchestrator presents the block and asks how to proceed, without hardening the step.
 - **Hardener finds issues it can't fix** (architectural trade-offs, ambiguous requirements): you choose to fix, skip, or stop.
 - **Standards enforcer finds unresolvable violations**: same — you decide.
 

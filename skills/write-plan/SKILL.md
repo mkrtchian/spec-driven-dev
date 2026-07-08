@@ -144,7 +144,10 @@ Task(
 )
 ```
 
-Report the step summary to the user.
+Handle the breakdown's output:
+
+- **STEPS ADDED**: report the step summary to the user and proceed to Phase 7.
+- **PLAN TOO AMBIGUOUS TO BREAK DOWN**: surface what is unclear and what the plan must resolve, and stop before the Phase 7 "Plan Ready" summary. The plan has no steps yet, so it is not ready for `/implement-plan`.
 
 ## Phase 7: Done
 
