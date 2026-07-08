@@ -8,5 +8,5 @@
   "homepage": "https://github.com/mkrtchian/spec-driven-dev",
   "repository": "https://github.com/mkrtchian/spec-driven-dev",
   "license": "MIT",
-  "keywords": ["plan", "tdd", "code-review", "standards", "workflow"]
+  "keywords": ["plan", "tdd", "code-review", "standards", "workflow", "spec-driven-development", "claude-code", "subagents"]
 }
