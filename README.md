@@ -5,7 +5,7 @@ Your plan, fresh agents, zero drift.
 [![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://docs.anthropic.com/en/docs/claude-code)
 
-A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 8 agents, ~900 lines of markdown. No code, no config, no state directories. Just prompts.
+A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 8 agents, ~1,000 lines of markdown. No code, no config, no state directories. Just prompts.
 
 ## Prerequisites
 
@@ -81,7 +81,7 @@ flowchart TD
 
 **Dynamic discovery over configuration.** Skills detect your project's test runner, linter, and standards by finding and reading `CLAUDE.md` and other relevant files. Nothing is hardcoded to a stack.
 
-**Conditional TDD.** Business logic gets test-first. Glue code, wiring, and config changes don't. This matches how experienced developers actually work.
+**Conditional TDD.** Business logic gets test-first. Glue code, wiring, and config changes don't. The line is whether the step has behavior worth pinning down. Applying test-first everywhere produces tests that assert nothing.
 
 **Step hardening.** After each implementation step, a fresh agent verifies alignment with the plan and fixes emergent issues. Problems are caught early, not discovered at the end.
 
