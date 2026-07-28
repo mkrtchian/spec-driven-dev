@@ -103,7 +103,7 @@ Handle the result:
 - **STEP COMMITTED WITH FIXES**: Note the fixes applied, continue to next step.
 - **ISSUES FOUND**: No commit was made. Present the issues to the user. Ask: "Fix these issues, skip them, or stop implementation?"
   - If fix: spawn another implementer to address the issues. If that implementer returns `IMPLEMENTATION BLOCKED`, handle it exactly as §1a: present the block to the developer and ask how to proceed, and do NOT re-harden a blocked tree. Otherwise (`IMPLEMENTATION COMPLETE`), re-harden.
-  - If skip: discover the project's commit conventions using the same priority order as `agents/sdd-standards-enforcer.md` "Discover commit conventions" (CLAUDE.md rules first, then a `/commit` skill or command, then commitlint/commitizen config, else standard conventional commits). Stage only the changed files by name (never `git add -A` or `git add .`), commit following those conventions, then continue to next step.
+  - If skip: discover the project's commit conventions using the same priority order as `agents/sdd-standards-enforcer.md` "Discover commit conventions" (CLAUDE.md rules first, then a `/commit` skill or command, then commitlint/commitizen config, else standard conventional commits). Stage only the changed files by name (never `git add -A` or `git add .`), commit following those conventions, and never use `git commit --no-verify`: pre-commit hooks must run. Then continue to next step.
   - If stop: go directly to the summary
 
 Record the step result (committed / committed with fixes / issues found + action taken).
