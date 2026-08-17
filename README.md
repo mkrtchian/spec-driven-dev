@@ -42,6 +42,8 @@ AI coding assistants hit two walls on non-trivial changes:
 
 Two skills, each orchestrating fresh agents with isolated context. Each agent starts with a fresh context window, focused on a single concern. No attention pollution between phases.
 
+The review passes run with fresh agents that never saw the code being written. Same principle as human code review, where the reviewer shouldn't be the author.
+
 ```mermaid
 flowchart TD
     subgraph "/write-plan"
@@ -111,15 +113,15 @@ In practice, well-structured prompts are followed reliably, though not perfectly
 
 For stronger guarantees on test/lint/typecheck, pair with git pre-commit hooks. Agents trigger them on every commit.
 
-## Comparison
-
-Tested on the same feature and repo as [GSD](https://github.com/open-gsd/gsd-core) and [Superpowers](https://github.com/obra/superpowers). All three produced working implementations. The key difference is in the review layer: spec-driven-dev runs dedicated review passes with fresh agents that never saw the code being written. Same principle as human code review, where the reviewer shouldn't be the author. The trade-off is speed (~22 min vs ~15 min for the others).
-
-For the full benchmark and detailed analysis, see the **[framework comparison](docs/comparison.md)** (a March 2026 snapshot, not continuously updated).
-
 ## Contributing
 
 Contributions welcome. [Open an issue](https://github.com/mkrtchian/spec-driven-dev/issues) to discuss before submitting a PR.
+
+## Comparison
+
+Tested on the same feature and repo as [GSD](https://github.com/open-gsd/gsd-core) and [Superpowers](https://github.com/obra/superpowers). All three produced working implementations. The trade-off is speed (~22 min vs ~15 min for the others).
+
+For the full benchmark and detailed analysis, see the **[framework comparison](docs/comparison.md)** (a March 2026 snapshot, not continuously updated).
 
 ## License
 
