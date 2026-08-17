@@ -1,18 +1,12 @@
-# Framework comparison: GSD vs Superpowers vs spec-driven-dev
+# Framework comparison: GSD, Superpowers, spec-driven-dev
 
 Part of [spec-driven-dev](../README.md).
 
-_Last updated: March 2026. These frameworks evolve fast, observations may not reflect their current versions._
+I ran this benchmark in March 2026, on one feature, against the two other spec-driven frameworks I had tried at the time. I ran it myself to situate this workflow while I was building it, so read the direction rather than the ratio.
+
+_These frameworks evolve fast, observations may not reflect their current versions._
 
 All three frameworks use the same underlying mechanism: Claude Code's `Task()` tool to spawn subagents. Each subagent gets a fresh 200k token context window. The frameworks differ in how they structure prompts, manage state, and orchestrate these subagents, but there is no process isolation, no Docker containers, no separate CLI invocations. It's prompt engineering with structure.
-
-## When to use what
-
-**Use [GSD](https://github.com/open-gsd/gsd-core)** if you're building a multi-phase project solo and want automated state tracking, parallel execution, and gap closure. Accept the `.planning/` overhead and the learning curve. In benchmarks, execution is fast (~15 min) with the lowest context usage (33%), but the reformatting overhead to enter GSD's format partially offsets the parallelization gains.
-
-**Use [Superpowers](https://github.com/obra/superpowers)** if you want the strict quality controls, cross-platform support, and a mature, well-tested framework. Accept that it's opinionated about workflow and growing in complexity. In benchmarks, execution is fast (~15 min) with useful mid-execution checkpoints, but context usage is higher (60%) due to skill-based accumulation.
-
-**Use spec-driven-dev** if you work in a team, want strict quality, and want simple isolated execution passes with no lock-in to any stack or workflow. Accept that it's minimal and you'll handle edge cases yourself. In benchmarks, execution is slower (~22 min) but finishes at 42% context, enough headroom for the many correction passes.
 
 ## Benchmark
 
@@ -32,11 +26,19 @@ All three were tested with a fresh session for execution (context cleared betwee
 
 **Observations:**
 
-GSD and Superpowers are ~30% faster for implementation. GSD finishes with the lowest context (33%), thanks to wave-based parallel execution and file-based state passing. All three catch issues at different stages: Superpowers reviews each task with 2 dedicated agents (spec + quality) during implementation; spec-driven-dev hardens (plan drift + emerging issues) each step with a fresh agent aware of the full plan, then runs 2 dedicated passes (standards + review) after all implementation is done: reviewers start clean, with no bias from having watched the code being written.
+GSD and Superpowers are ~30% faster for implementation. GSD finishes with the lowest context (33%), thanks to wave-based parallel execution and file-based state passing. All three catch issues at different stages: Superpowers reviews each task with 2 dedicated agents (spec + quality) during implementation; spec-driven-dev hardens (plan drift + emerging issues) each step with a fresh agent aware of the full plan, then runs 2 dedicated passes (standards + review) after all implementation is done.
 
 Superpowers' human-in-the-loop during execution is a genuine trade-off: catching issues after every pair of steps vs reviewing at the end. The cost is that you must be present during execution rather than doing other work.
 
 All three frameworks produced working implementations. The differences are in the correction and verification layer: how much context is left for it, and how it's structured.
+
+## What I concluded at the time
+
+**[GSD](https://github.com/open-gsd/gsd-core)** suited a multi-phase project built solo, with automated state tracking, parallel execution, and gap closure, at the cost of the `.planning/` overhead and the learning curve. Execution was fast (~15 min) with the lowest context usage (33%), though the reformatting overhead to enter GSD's format partly offset the parallelization gains.
+
+**[Superpowers](https://github.com/obra/superpowers)** suited strict quality controls, cross-platform support, and a mature, well-tested framework, at the cost of being opinionated about workflow and growing in complexity. Execution was fast (~15 min) with useful mid-execution checkpoints, and context usage was higher (60%) due to skill-based accumulation.
+
+**spec-driven-dev** is the one I kept, for team work, strict quality, and simple isolated execution passes with no lock-in to any stack or workflow. It is minimal, and you handle edge cases yourself. Execution was slower (~22 min) but finished at 42% context, enough headroom for the many correction passes.
 
 ---
 
@@ -48,7 +50,7 @@ The three frameworks use different patterns for passing information between agen
 
 **Superpowers**: Skills are loaded into the main agent's context via the Skill tool. The orchestrating agent carries the skill text in its own context window throughout the session. Sub-agent results also come back into this context, but the dominant cost is the skill text itself, retransmitted at every turn. Sub-agents get fresh context, but the orchestrator itself degrades as context fills and gets compressed.
 
-**spec-driven-dev** (this repo): Agent prompts are custom agent definitions distributed via the plugin. The orchestrator skills reference them by `subagent_type`, the runtime resolves the agent definition and passes it to the sub-agent directly, so the orchestrator never sees their content. The orchestrator sees only short status messages ("STEP COMMITTED", "ISSUES FOUND", "STANDARDS COMPLIANT") and stays lightweight throughout. Sub-agents do redundant file reads, but this is cheaper than retransmitting a growing orchestrator context at every turn.
+**spec-driven-dev** (this repo): Agent prompts are custom agent definitions distributed via the plugin. The orchestrator skills reference them by `subagent_type`, the runtime resolves the agent definition and passes it to the sub-agent directly, so the orchestrator never sees their content. The orchestrator sees only short status messages ("STEP COMMITTED", "ISSUES FOUND", "STANDARDS COMPLIANT") and stays lightweight throughout. The cost is redundant file reads by sub-agents, rather than a growing orchestrator context retransmitted at every turn.
 
 ## Framework details
 
