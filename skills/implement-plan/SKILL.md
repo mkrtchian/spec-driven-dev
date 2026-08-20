@@ -226,7 +226,7 @@ Hardener remarks:
 Final review remarks:
 [remarks from the final review agent, or "not run"]
 
-Requires your judgment:
+Fact-check judgment items:
 [currency notes, unverified facts, and non-minimal corrections from the fact check; or "None"]
 ```
 
