@@ -22,10 +22,10 @@ The agent will:
 2. **Draft**: Write a detailed implementation plan to `plans/YYYY-MM-DD_feature-name.md`.
 3. **Review the plan** (fresh agent): Check for gaps, wrong assumptions, integration risks. Auto-corrects the plan.
 4. **Check standards** (fresh agent): Verify the plan respects project coding and testing conventions. Auto-corrects.
-5. **Run due diligence** (fresh agent): Web-verify the external facts the plan cites (versions, API contracts, action names) against live sources, and surface the risks and decisions you would implicitly approve by executing the plan. Fixes factual errors, flags judgment calls.
+5. **Run due diligence** (fresh agent): Web-verify the external facts the plan cites (versions, API contracts, action names) against live sources, and surface the risks and decisions you would implicitly approve by executing the plan. Fixes factual errors, flags judgment calls, including the facts the plan defers to implementation instead of citing. Records what it settled and what it left open in a `## Due diligence record` section of the plan, so the implementation phase can read it.
 6. **Break into steps** (fresh agent): Split the plan into the fewest ordered implementation steps that fit within an agent's context budget.
 
-The command ends here. You review the plan and make necessary changes (manually or by asking the agent to make the adjustments), and the command proposes committing the plan so it exists in git before you implement it.
+The command ends here. You review the plan and make necessary changes (manually or by asking the agent to make the adjustments), and the command proposes committing the plan so it exists in git before you implement it. The plan you commit now carries the due diligence record, so what plan-time verification concluded is still readable when the code gets written.
 
 ## 2. Implement
 
@@ -44,6 +44,7 @@ The orchestrator executes each step from the plan:
 
 **After all steps:**
 
+- **Fact check** (fresh agent): Verifies the external facts the implementation put into the code (versions, API fields, endpoints, published values) against live sources, reading the plan's `## Due diligence record` to know where to look first. Fixes facts that are wrong, flags currency notes and facts it could not verify, and commits. Gated: a diff with no third-party surface costs a single diff read and no web call.
 - **Standards enforcement** (fresh agent): Checks the full diff against project coding standards. Fixes violations directly, verifies (tests, lint, typecheck), and commits.
 - **Final review** (fresh agent): Reads the full plan and full diff. Fixes obvious issues directly (typos, wrong imports, dead code, convention violations) and commits them. Flags trade-offs and architectural choices as remarks for you to decide.
 
@@ -57,6 +58,7 @@ The orchestrator stops and asks you when an agent can't resolve an issue on its 
 
 - **Implementer reports it is blocked** (verification cannot be made to pass, or the step's approach is invalid): the orchestrator presents the block and asks how to proceed, without hardening the step.
 - **Hardener finds issues it can't fix** (architectural trade-offs, ambiguous requirements): you choose to fix, skip, or stop.
+- **Fact checker returns issues it can't repair** (a correction against a live source breaks verification and can't be cleanly reverted): the orchestrator presents the issues and asks how to proceed. A fact it simply could not verify is not this case: it rides along as a judgment item and the run continues.
 - **Standards enforcer finds unresolvable violations**: same, you decide.
 
 In all cases, the plan is still the reference. You can adjust it, ask the agent to retry a step, or finish manually.

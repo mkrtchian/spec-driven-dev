@@ -3,13 +3,13 @@
 Your plan, fresh agents, zero drift.
 
 [![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
-[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://docs.anthropic.com/en/docs/claude-code)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://code.claude.com/docs)
 
-A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 8 agents, ~1,000 lines of markdown. No code, no config, no state directories. Just prompts.
+A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 9 agents, ~1,200 lines of markdown. No code, no config, no state directories. Just prompts.
 
 ## Prerequisites
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (requires a Max/Team subscription or API key)
+- [Claude Code](https://code.claude.com/docs) (requires a Max/Team subscription or API key)
 
 ## Install
 
@@ -62,7 +62,8 @@ flowchart TD
         H --> I["Harden · catch drift, fix issues, commit"]
         I -- next step --> G
 
-        G -. all steps done .-> J["Enforce coding standards on full diff"]
+        G -. all steps done .-> FC["Fact check · verify external facts against live sources"]
+        FC --> J["Enforce coding standards on full diff"]
         J --> K["Final review · fix issues, flag trade-offs"]
     end
 
@@ -101,7 +102,7 @@ The [mcp-auditor](https://github.com/mkrtchian/mcp-auditor) project was built us
 
 ```
 skills/          2 orchestrator skills (/write-plan, /implement-plan)
-agents/          8 custom agent definitions (reviewer, implementer, hardener, etc.)
+agents/          9 custom agent definitions (reviewer, implementer, hardener, etc.)
 docs/            Workflow guide, design decisions, framework comparison
 ```
 
