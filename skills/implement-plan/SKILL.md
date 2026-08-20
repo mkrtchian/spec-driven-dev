@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 ## Objective
 
-Execute a reviewed plan through its implementation steps. Each step gets a dedicated implementer agent, followed by a step hardener that verifies completeness and fixes emergent issues. After all steps, a standards review and final review close the loop.
+Execute a reviewed plan through its implementation steps. Each step gets a dedicated implementer agent, followed by a step hardener that verifies completeness and fixes emergent issues. After all steps, a fact check against live sources, a standards review and a final review close the loop.
 
 ## Context
 
@@ -31,6 +31,8 @@ Record the current git HEAD before any changes:
 ```bash
 BASELINE_SHA=$(git rev-parse HEAD)
 ```
+
+`$UNVERIFIED_FACTS` starts empty. Steps accumulate into it (§1a), and §2 passes it to the fact check.
 
 Parse the implementation steps from the plan. Each step starts with `### Step N:` or `**Step N:`.
 
@@ -67,7 +69,7 @@ Task(
 
 Handle the implementer's exit state:
 
-- **IMPLEMENTATION COMPLETE**: proceed to hardening (§1b).
+- **IMPLEMENTATION COMPLETE**: record any `Unverified external value:` bullets the implementer reported in its `Deviations from plan` section, accumulating them across steps into `$UNVERIFIED_FACTS`. Keep each entry to the value, the file it landed in, and the one-line reason: nothing else from the implementer's report enters the orchestrator. Then proceed to hardening (§1b). This applies to every implementer invocation, including the extra implementer spawned on the §1b fix path.
 - **IMPLEMENTATION BLOCKED**: do NOT spawn the hardener. Present the block to the developer (what blocks, what was tried, state of the tree) and ask how to proceed. Keep it open-ended: the developer may rework the plan and retry the step, unblock the tree manually, or stop. Do not offer a skip-and-continue: a blocked step usually leaves later dependent steps unbuildable.
 
 ### 1b. Step hardening (fresh sub-agent)
@@ -108,7 +110,40 @@ Handle the result:
 
 Record the step result (committed / committed with fixes / issues found + action taken).
 
-## 2. Standards enforcement (fresh sub-agent)
+## 2. Fact check (fresh sub-agent)
+
+Display:
+```
+--- Fact Check ---
+Verifying the diff's external facts against live sources...
+```
+
+Spawn a sub-agent:
+
+```
+Task(
+  subagent_type="spec-driven-dev:sdd-fact-checker",
+  model="opus",
+  description="Check external facts",
+  prompt="
+    Plan file: $PLAN_PATH
+    Baseline: $BASELINE_SHA
+
+    Unverified external values reported during implementation:
+    $UNVERIFIED_FACTS
+  "
+)
+```
+
+If no implementer reported any, say so explicitly in that section rather than omitting it.
+
+Handle the result:
+
+- **FACTS VERIFIED**: Continue.
+- **FACTS CORRECTED**: Note the corrections applied, continue.
+- **ISSUES FOUND**: Present the issues to the user and ask how to proceed.
+
+## 3. Standards enforcement (fresh sub-agent)
 
 Display:
 ```
@@ -141,7 +176,7 @@ Handle the result:
 - **STANDARDS ENFORCED**: Note the fixes applied, continue.
 - **ISSUES FOUND**: Present the issues to the user and ask how to proceed.
 
-## 3. Final review (fresh sub-agent)
+## 4. Final review (fresh sub-agent)
 
 Display:
 ```
@@ -159,11 +194,13 @@ Task(
   prompt="
     Plan file: $PLAN_PATH
     Baseline: $BASELINE_SHA
+
+    A fact-check pass ran before you and may have committed corrections to external values. Review its commit like any other.
   "
 )
 ```
 
-## 4. Summary
+## 5. Summary
 
 Display:
 
@@ -177,7 +214,9 @@ Steps:
   Step 2: [title]: [committed / committed with N fixes / issues: action taken]
   ...
 
-Standards enforcement: [COMPLIANT / N fixes applied]
+Fact check: [no external facts / N facts verified / N corrections applied / issues: action taken / not run]
+
+Standards enforcement: [COMPLIANT / N fixes applied / not run]
 
 Commits: (list all commits from $BASELINE_SHA to HEAD with hash and message)
 
@@ -185,5 +224,10 @@ Hardener remarks:
 [remarks reported by the hardener across steps, collected from each STEP COMMITTED WITH FIXES; or "None"]
 
 Final review remarks:
-[remarks from the final review agent]
+[remarks from the final review agent, or "not run"]
+
+Requires your judgment:
+[currency notes, unverified facts, and non-minimal corrections from the fact check; or "None"]
 ```
+
+The three pass status lines each carry a state for a run that stopped short of them: the §1b "stop" branch jumps straight here, and a fact-check `ISSUES FOUND` the developer answers with "stop" leaves §3 and §4 unrun. The summary must not imply a pass ran when it did not.
