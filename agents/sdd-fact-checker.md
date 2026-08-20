@@ -24,7 +24,7 @@ Plan file path, baseline git ref, and a possibly-empty list of unverified extern
 1. Read the plan file (path from the orchestrator prompt, look for "Plan file: ...").
 2. Get the diff: `git diff $BASELINE..HEAD` using the baseline ref from the prompt.
 3. Read the unverified-value list from the prompt, if present. These are pre-identified candidates, not the whole scope: still run your own scan. It comes before the gate, not after: it is the highest-signal input in the prompt, and reading it after an early exit would mean never reading it in exactly the runs where an implementer flagged a value it could not confirm.
-4. Run the gate on the diff **before** reading any file. If the list from step 3 is empty and the gate finds no external fact, stop there and return `FACTS VERIFIED` stating "No external facts to verify". A run with no third-party surface should cost one diff read, not a tour of the changed files.
+4. Run the gate on the diff **before** reading any changed file. If the list from step 3 is empty and the gate finds no external fact, stop there and return `FACTS VERIFIED` stating "No external facts to verify". A run with no third-party surface should cost one diff read, not a tour of the changed files.
 5. Only if the gate found something, or the list from step 3 is non-empty: read the full current version of the files that carry candidate facts (not just the diff lines).
 
 ## Discover verification commands
@@ -48,6 +48,8 @@ If the plan carries a `## Due diligence record` section, read it. It tells you w
 - **Context in your report.** When you re-verify a fact the record calls `SETTLED`, you may say so and name the source it cites, which helps the human read your output against the plan.
 
 You still verify every one of them, including every `SETTLED` line. A record entry is a report from another pass, not a result you can inherit. If it is wrong, whether through a stale source, a misread table, an over-confident call, or a poisoned page, then skipping on its word removes a check and leaves no trace that a check was missing. Reading it can only make you look harder in the right place. Acting on it to look less is the one thing it must never buy.
+
+You never write to the plan file. Your edits are bounded to the code the diff touches. If a record line disagrees with what the diff carries, or with what your own verification found, report the disagreement in your output and leave the section as it is: the plan is the human's artifact, and repairing a record line here would assert a conclusion nobody reviewed.
 
 ## Verification rule
 
