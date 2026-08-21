@@ -110,7 +110,7 @@ Not for a single-file fix or a small refactor: the overhead exceeds the benefit 
 skills/          2 orchestrator skills (/write-plan, /implement-plan)
 agents/          9 custom agent definitions, one per fresh-agent pass in the diagram above
 docs/            Workflow guide, design decisions, framework comparison
-plans/           3 plans, produced by running this workflow on itself
+plans/           4 plans, produced by running this workflow on itself
 ```
 
 The agents are distributed with the plugin. Manual installation is not supported: the plugin system resolves the agent references.

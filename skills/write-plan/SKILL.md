@@ -51,7 +51,7 @@ The plan should cover:
 - **Test scenarios**: What to test, with expected inputs/outputs
 - **Verification**: Commands to run to confirm correctness
 
-Nothing above prescribes a structure: cover those concerns in whatever shape fits the change. One formatting rule, because it is not a matter of taste: write each paragraph as a single line, without hard wrapping. A wrapped paragraph reflows when one word changes, so a one-line correction shows up as ten changed lines in the diff, and the plan is meant to be reviewed in a pull request like any other file.
+That list is a set of concerns, not a section layout: cover them in whatever shape fits the change. One formatting rule: unless the project documents a wrapping convention of its own, write each paragraph as a single line, without hard wrapping. A wrapped paragraph reflows when one word changes, so a one-word correction shows up as ten changed lines in the diff, and the plan is meant to be reviewed in a pull request like any other file.
 
 Tell the user the plan path when done. From this point on, `$PLAN_PATH` refers to the path of the plan file you just created.
 
