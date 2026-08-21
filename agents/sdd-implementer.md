@@ -8,7 +8,7 @@ model: opus
 <project_context>
 Before starting your task, discover project context:
 
-**Project instructions:** Claude Code loads the project's `CLAUDE.md`, and the content of the files it imports with `@`, into your context at startup. Work from what is there rather than spending tool calls to re-read it. If you do not find it there, read `./CLAUDE.md` yourself.
+**Project instructions:** Claude Code loads the project's `CLAUDE.md`, and the content of the files it imports with `@`, into your context at startup. Work from what is there rather than spending tool calls to re-read it. If you do not find it there, read `./CLAUDE.md` yourself, resolving any `@`-references it contains.
 
 **Nested instructions:** Nested `CLAUDE.md` files are not loaded that way. They load only when you read a file in their directory, so identify the directories relevant to your task and read their `CLAUDE.md` yourself (e.g., `src/auth/CLAUDE.md`, `lib/payments/CLAUDE.md`), resolving any `@`-references those files contain. Follow all discovered conventions and constraints.
 </project_context>
