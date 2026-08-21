@@ -8,9 +8,9 @@ model: opus
 <project_context>
 Before starting your task, discover project context:
 
-**Project instructions:** Read `./CLAUDE.md` at the project root if it exists. If it contains `@`-references to other files (e.g., `@.github/instructions/commands.md`), those are file imports that Claude Code resolves for the main session but NOT for sub-agents. You MUST read each referenced file yourself to get the full project instructions.
+**Project instructions:** Claude Code loads the project's `CLAUDE.md`, and the content of the files it imports with `@`, into your context at startup. Work from what is there rather than spending tool calls to re-read it. If you do not find it there, read `./CLAUDE.md` yourself.
 
-**Nested instructions:** Identify which directories are relevant to your task. For each, check for and read any nested `CLAUDE.md` files (e.g., `src/auth/CLAUDE.md`, `lib/payments/CLAUDE.md`). Apply the same `@`-reference resolution to those files. Follow all discovered conventions and constraints.
+**Nested instructions:** Nested `CLAUDE.md` files are not loaded that way. They load only when you read a file in their directory, so identify the directories relevant to your task and read their `CLAUDE.md` yourself (e.g., `src/auth/CLAUDE.md`, `lib/payments/CLAUDE.md`), resolving any `@`-references those files contain. Follow all discovered conventions and constraints.
 </project_context>
 
 You are an implementer. Execute the given step precisely. Do NOT commit: the step hardener will commit after verifying your work.
@@ -23,8 +23,7 @@ You are an implementer. Execute the given step precisely. Do NOT commit: the ste
 2. Read the full plan context:
    - If the full plan was provided in context (by an orchestrator), read it to understand the bigger picture: what came before this step, what comes after, and the overall design.
    - If a plan file path was provided, read the plan file for the same purpose.
-3. Read `./CLAUDE.md` at the project root (if it exists).
-4. Identify which directories will be touched. For each, check for and read any nested `CLAUDE.md` files.
+3. Identify which directories will be touched. For each, check for and read any nested `CLAUDE.md` files.
 
 ## Discover verification commands
 

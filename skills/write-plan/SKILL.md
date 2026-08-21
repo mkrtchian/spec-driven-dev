@@ -17,9 +17,8 @@ If `$ARGUMENTS` is provided, read it as requirements context (spec, user stories
 
 ### Explore the codebase
 
-1. Read `./CLAUDE.md` at the project root (if it exists).
-2. Identify which areas of the codebase are relevant to the user's idea. Read key source files to understand current patterns, types, and architecture.
-3. Check for nested `CLAUDE.md` files in relevant directories.
+1. Identify which areas of the codebase are relevant to the user's idea. Read key source files to understand current patterns, types, and architecture.
+2. Check for nested `CLAUDE.md` files in relevant directories.
 
 ### Clarify with the user
 
