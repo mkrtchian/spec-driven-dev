@@ -103,8 +103,41 @@ Handle the result:
 
 - **STEP COMMITTED**: Continue to next step.
 - **STEP COMMITTED WITH FIXES**: Note the fixes applied, continue to next step.
-- **ISSUES FOUND**: No commit was made. Present the issues to the user. Ask: "Fix these issues, skip them, or stop implementation?"
-  - If fix: spawn another implementer to address the issues. If that implementer returns `IMPLEMENTATION BLOCKED`, handle it exactly as §1a: present the block to the developer and ask how to proceed, and do NOT re-harden a blocked tree. Otherwise (`IMPLEMENTATION COMPLETE`), re-harden.
+- **ISSUES FOUND**: No commit was made. Present the issues to the user. Findings travel verbatim wherever they go, to the developer here and to the implementer below: never drop, merge, reword, or summarize one. If this step has already come back with `ISSUES FOUND` earlier in this run, say so, and name which findings the new report raises again and which it does not repeat. A finding that is not repeated is not proof it was fixed: this hardener is a fresh agent that never saw the earlier report. Ask: "Fix these issues, skip them, or stop implementation?"
+  - If fix: spawn a fresh implementer at the findings. This is the workflow's one relay of a pass's conclusions to another pass to apply, and the prose handover still loses something, which is why a fresh hardening pass verifies the result afterwards.
+
+    Display:
+    ```
+    --- Step N: Fixing findings ---
+    Spawning implementer...
+    ```
+
+    ```
+    Task(
+      subagent_type="spec-driven-dev:sdd-implementer",
+      model="opus",
+      description="Address step N findings",
+      prompt="
+        ## Step that was implemented
+
+        {content of step N from the plan}
+
+        ## Plan file path
+
+        $PLAN_PATH
+
+        ## State of the tree
+
+        This step is already implemented and left uncommitted. A hardening pass reviewed it, applied the fixes it could, and would not commit the result. Run `git diff` and `git diff --cached` before editing anything: the tree carries the implementer's work plus the hardener's fixes, keep both. Address the findings below rather than reimplementing the step, and do not redo the step's TDD decision: add or amend tests only where a finding calls for it.
+
+        ## Findings to address
+
+        {the hardener's ISSUES FOUND items, verbatim}
+      "
+    )
+    ```
+
+    If that implementer returns `IMPLEMENTATION BLOCKED`, handle it exactly as §1a: present the block to the developer and ask how to proceed, and do NOT re-harden a blocked tree. Otherwise (`IMPLEMENTATION COMPLETE`), re-harden.
   - If skip: discover the project's commit conventions using the same priority order as `agents/sdd-standards-enforcer.md` "Discover commit conventions" (CLAUDE.md rules first, then a `/commit` skill or command, then commitlint/commitizen config, else standard conventional commits). Stage only the changed files by name (never `git add -A` or `git add .`), commit following those conventions, and never use `git commit --no-verify`: pre-commit hooks must run. Then continue to next step.
   - If stop: go directly to the summary
 

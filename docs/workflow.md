@@ -59,7 +59,7 @@ Check the result. The plan is still there as the reference: you can point to spe
 The orchestrator stops and asks you when an agent can't resolve an issue on its own:
 
 - **Implementer reports it is blocked** (verification cannot be made to pass, or the step's approach is invalid): the orchestrator presents the block and asks how to proceed, without hardening the step.
-- **Hardener finds issues it can't fix** (architectural trade-offs, ambiguous requirements): you choose to fix, skip, or stop. Fix sends a fresh implementer at the findings, then hardens again. Skip commits the step as it stands, issues included and verification unproven, and moves on. Stop goes straight to the summary.
+- **Hardener finds issues it can't fix** (architectural trade-offs, ambiguous requirements): you choose to fix, skip, or stop. Fix sends a fresh implementer at the findings, then hardens again. If the same step comes back a second time, the orchestrator says so and names which findings the new report repeats, since nothing else tells you the step is not converging. Skip commits the step as it stands, issues included and verification unproven, and moves on. Stop goes straight to the summary.
 - **Fact checker returns issues it can't repair** (a correction against a live source breaks verification and can't be cleanly reverted): the orchestrator presents the issues and asks how to proceed. A fact it simply could not verify is not this case: it rides along as a judgment item and the run continues.
 - **Standards enforcer finds unresolvable violations**: same, you decide.
 
