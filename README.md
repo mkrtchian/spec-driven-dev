@@ -5,7 +5,7 @@ Your plan, fresh agents, zero drift.
 [![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://code.claude.com/docs)
 
-A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 9 agents, ~1,200 lines of markdown. No code, nothing to configure, no state directories. Just prompts.
+A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 9 agents, ~1,400 lines of markdown. No code, nothing to configure, no state directories. Just prompts.
 
 ## Prerequisites
 
@@ -79,7 +79,7 @@ flowchart TD
 
 **Isolated passes.** A single agent asked to "implement this plan, follow TDD, and check coding standards" will do all three poorly. An agent that just spent 20 minutes implementing code is a poor judge of it: it's biased toward the code it just wrote. The orchestrator is the one context that lives through the whole run, so it stays light: it references its agents by `subagent_type`, and their prompt content never enters it. For the detailed rationale and sources, see [design-decisions.md](docs/design-decisions.md).
 
-**Fix what has one answer, flag the rest.** A wrong file path, a type signature that doesn't match the code, a violation of a documented standard: one right answer, so the pass applies it. Anything that rests on a judgment call is never decided for you, it comes back as a remark in the pass report or as a `<!-- REVIEW: ... -->` marker in the plan. On the happy path you are interrupted once per command, at the end.
+**Fix what has one answer, flag the rest.** A wrong file path, a type signature that doesn't match the code, a violation of a documented standard: one right answer, so the pass applies it. One right answer the finding pass may not apply itself, like a wrong API field the fact checker would have to restructure code around to correct, is handed to the pass that can, with a fresh pass verifying the result. Anything that rests on a judgment call is never decided for you, it comes back as a remark in the pass report or as a `<!-- REVIEW: ... -->` marker in the plan. On the happy path you are interrupted once per command, at the end.
 
 **Plans in git.** Your plan is a plain markdown file in `plans/`. It goes through your normal PR review process. No state directory, no counters to keep in sync. Two developers can plan and implement different features on different branches without interfering.
 
@@ -121,7 +121,7 @@ In practice, well-structured prompts are followed reliably, though not perfectly
 
 These are instructions, not enforced gates, but they are instructions you can read. The implementer is told never to commit, so a fresh agent is the one that verifies the step and commits it. Every agent that commits has to quote the tail of the real command output ("47 passed, 0 failed") instead of asserting a PASS. No commit path, agent or orchestrator, may use `--no-verify` or `git add -A`. All three are in the agent and skill files, in plain markdown.
 
-When a pass cannot resolve something on its own, the run stops and asks you, and a blocked step is never hardened or skipped past. There is no cross-session state: an interrupted run restarts from the top of the plan, with the already-committed steps still in git. Failure paths are in the [workflow guide](docs/workflow.md).
+What a pass cannot settle on its own either goes to an agent that can, with a fresh pass verifying the result before it is committed, or comes to you, and a blocked step is never hardened or skipped past. There is no cross-session state: an interrupted run restarts from the top of the plan, with the already-committed steps still in git. Failure paths are in the [workflow guide](docs/workflow.md).
 
 For stronger guarantees on test/lint/typecheck, pair with git pre-commit hooks.
 
