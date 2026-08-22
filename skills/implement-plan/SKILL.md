@@ -178,7 +178,7 @@ Handle the result:
 - **FACTS CORRECTED**: Note the corrections applied, continue.
 - **ISSUES FOUND**: Present the issues to the user and ask how to proceed. Present any `NEEDS A FRESH IMPLEMENTER` items as part of what the developer sees rather than routing them: this state means the tree is in a condition no automated correction should build on.
 
-On `FACTS VERIFIED` or `FACTS CORRECTED`, read the report's `NEEDS A FRESH IMPLEMENTER` section before continuing. If it reads "none", go to §3 as usual. If it carries items, record them verbatim into `$RELAY_FACTS` and go to §2a instead. Keep each entry to the true value, the source that settles it, and the file the false value landed in: nothing else from the fact check's report enters the orchestrator.
+On `FACTS VERIFIED` or `FACTS CORRECTED`, read the report's `NEEDS A FRESH IMPLEMENTER` section before continuing. If it reads "none", go to §3 as usual. If it carries items, record them verbatim into `$RELAY_FACTS` and go to §2a instead. Keep each entry to the true value, the source that settles it, and the file the false value landed in: nothing else from the fact check's report enters `$RELAY_FACTS`.
 
 ## 2a. Relay to a fresh implementer
 
@@ -347,7 +347,7 @@ Final review remarks:
 [remarks from the final review agent, or "not run"]
 
 Fact-check judgment items:
-[currency notes, unverified facts, and corrections that require a choice, from the fact check; or "None"]
+[currency notes, unverified facts, and corrections that require a choice, from the fact check and from the targeted re-check if one ran, naming which pass raised each; or "None"]
 ```
 
 The three pass status lines each carry a state for a run that stopped short of them: the §1b "stop" branch jumps straight here, a fact-check `ISSUES FOUND` the developer answers with "stop" leaves §3 and §4 unrun, and a §2b `ISSUES FOUND` ends the run on its own with those same two passes unrun. The summary must not imply a pass ran when it did not. On that third path it must also say the working tree is dirty: it still carries the relay implementer's uncommitted edits, name the files they touch, and state that nothing has verified them. An uncommitted tree the run announces is reported state rather than hidden state, and the developer finishes it by hand.
