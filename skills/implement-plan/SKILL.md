@@ -212,7 +212,7 @@ Task(
 
     Every implementation step is committed, and the fact-check pass that produced the corrections above already committed the ones that fitted its own write bound, so the tree is clean when you start. What is left are values it confirmed wrong but may not write, because the true value needs more than an in-place edit of the value itself.
 
-    Each item carries a value already verified against the source quoted beside it. Take it as given and make the code match it: do not spend web calls re-verifying it. Bound the edit to what the true value requires and nothing else. Files the list does not name are in scope when the true value requires them (call sites, types, tests), and nothing beyond that is.
+    Each item carries a value already verified against the source quoted beside it. Take it as given and make the code match it: do not spend web calls re-verifying it. Bound the edit to what the true value requires and nothing else. Files the list does not name are in scope when the true value requires them (call sites, types, tests), and nothing beyond that is. Amend the tests that carry the old value rather than opening a test-first cycle for the new one.
 
     Do NOT commit. A targeted fact-check pass runs behind you, verifies your work against the live sources, and commits it.
   "
@@ -333,6 +333,9 @@ Steps:
 
 Fact check: [no external facts / N facts verified / N corrections applied / N corrections relayed to an implementer / issues: action taken / not run]
 
+Fact-check relay:
+["None", or what the fact check relayed to a fresh implementer and how it ended: "verified and committed by the re-check", or "the re-check found the value still wrong and ended the run, leaving these files uncommitted and unverified in the working tree: ..."]
+
 Standards enforcement: [COMPLIANT / N fixes applied / not run]
 
 Commits: (list all commits from $BASELINE_SHA to HEAD with hash and message)
@@ -342,9 +345,6 @@ Hardener remarks:
 
 Final review remarks:
 [remarks from the final review agent, or "not run"]
-
-Fact-check relay:
-["None", or what the fact check relayed to a fresh implementer and how it ended: "verified and committed by the re-check", or "the re-check found the value still wrong and ended the run, leaving these files uncommitted and unverified in the working tree: ..."]
 
 Fact-check judgment items:
 [currency notes, unverified facts, and corrections that require a choice, from the fact check; or "None"]
