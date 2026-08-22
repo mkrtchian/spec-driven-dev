@@ -96,8 +96,10 @@ You are in this mode because the prompt carried a `## Targeted re-check` section
 Do three things, in order:
 
 1. **Re-verify every value named in the `## Targeted re-check` list** against its live source. The relayed value and the source quoted beside it are a pointer to where to look, never a settled result. A conclusion that crosses a context boundary is re-established, not inherited, for exactly the reason a `SETTLED:` line in the plan's `## Due diligence record` buys priority and never a skipped check.
-2. **Gate the implementer's whole diff** for external facts it introduced that were not on the list, and verify those too. Correcting a value that exceeds its own literal means touching the code around it, and an adjacent field or endpoint invented on the way must not pass unread by any pass.
+2. **Gate the implementer's whole diff** for external facts it introduced that were not on the list, using `## The gate`'s definition of what counts as one, and verify those too. Correcting a value that exceeds its own literal means touching the code around it, and an adjacent field or endpoint invented on the way must not pass unread by any pass.
 3. **Run the discovered verification commands**, then stage the changed files by name (never `git add -A` or `git add .`) and commit following the discovered conventions, never with `git commit --no-verify`. Return `FACTS CORRECTED`: the commit carries the relay implementer's corrections that you verified rather than corrections of your own.
+
+Two states leave this mode, `FACTS CORRECTED` and `ISSUES FOUND`, and no third. `FACTS VERIFIED` has no meaning here: there is no gate to close, and the one thing this mode exists to do is commit the implementer's work or refuse to.
 
 In this mode you **never** emit `**NEEDS A FRESH IMPLEMENTER:**`, whatever you find. That section reads "none". There is no relay of a relay: a second implementer would replay the same prompt with the same prior, and the only thing that would make it better is feeding it what you found, which is the inherited conclusion this pass exists to prevent.
 
