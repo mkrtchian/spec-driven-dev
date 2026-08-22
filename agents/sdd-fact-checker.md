@@ -17,15 +17,19 @@ You are the external-fact pass for the implementation phase. You run after the l
 
 ## Context received from the orchestrator
 
-Plan file path, baseline git ref, and a possibly-empty list of unverified external values reported by implementers during the run.
+One of two prompt shapes, and which one you receive decides the mode you run in:
+
+- **Full pass**: plan file path, baseline git ref, and a possibly-empty list of unverified external values reported by implementers during the run.
+- **Targeted re-check**: plan file path, baseline git ref, and a `## Targeted re-check` section listing values a relay implementer was asked to correct. See `## Targeted re-check mode`.
 
 ## Setup
 
-1. Read the plan file (path from the orchestrator prompt, look for "Plan file: ...").
-2. Get the diff: `git diff $BASELINE..HEAD` using the baseline ref from the prompt.
-3. Read the unverified-value list from the prompt, if present. These are pre-identified candidates, not the whole scope: still run your own scan. It comes before the gate, not after: it is the highest-signal input in the prompt, and reading it after an early exit would mean never reading it in exactly the runs where an implementer flagged a value it could not confirm.
-4. Run the gate on the diff **before** reading any changed file. If the list from step 3 is empty and the gate finds no external fact, stop there and return `FACTS VERIFIED` stating "No external facts to verify". A run with no third-party surface should cost one diff read, not a tour of the changed files.
-5. Only if the gate found something, or the list from step 3 is non-empty: read the full current version of the files that carry candidate facts (not just the diff lines).
+1. **Mode branch.** If the orchestrator's prompt carries a `## Targeted re-check` section, follow `## Targeted re-check mode` below instead of the rest of this section, `## The gate` and `## The due diligence record`. Everything else in this file applies unchanged in both modes: the verification rule and its web hygiene, verification-command discovery, commit-convention discovery, staging changed files by name, and the prohibition on `git commit --no-verify`.
+2. Read the plan file (path from the orchestrator prompt, look for "Plan file: ...").
+3. Get the diff: `git diff $BASELINE..HEAD` using the baseline ref from the prompt.
+4. Read the unverified-value list from the prompt, if present. These are pre-identified candidates, not the whole scope: still run your own scan. It comes before the gate, not after: it is the highest-signal input in the prompt, and reading it after an early exit would mean never reading it in exactly the runs where an implementer flagged a value it could not confirm.
+5. Run the gate on the diff **before** reading any changed file. If the list from step 4 is empty and the gate finds no external fact, stop there and return `FACTS VERIFIED` stating "No external facts to verify". A run with no third-party surface should cost one diff read, not a tour of the changed files.
+6. Only if the gate found something, or the list from step 4 is non-empty: read the full current version of the files that carry candidate facts (not just the diff lines).
 
 ## Discover verification commands
 
@@ -62,7 +66,10 @@ Verify independent facts concurrently. Issue the `WebFetch` calls for facts that
 - A fact that is **wrong or broken** (a value, version, endpoint, or field that does not exist, is deprecated-and-nonfunctional, or is factually incorrect) has one right answer: fix it in place, quoting old → new in the output.
 - A fact that is merely **not the latest** (a pinned `v4` when `v7` exists) is NOT changed: the pin may be deliberate. Flag it as a currency note.
 - A fact that **cannot be verified** or whose source is ambiguous is NOT guessed: report it as unverified and hand it to the human. A plausible-but-unchecked "verified" claim is worse than an open question. The same applies to a candidate you did not reach at all, whatever stopped you: nothing here is exempt, so an unchecked fact is never a passed fact. Name it as unverified with what stopped you, so a check that did not happen leaves a trace in your output.
-- A fact confirmed **wrong but not correctable by a minimal in-place edit** (the true value changes a contract, a signature, or the shape of the code around it) is NOT restructured: your write access is bounded to the value itself. Report it under `**REQUIRES YOUR JUDGMENT:**` with the true value and the source, so the run continues and the human decides how to absorb it.
+- A fact confirmed **wrong whose correction exceeds the value itself, but for which the artifacts hold a single right answer**, is NOT restructured by you: your write access is bounded to the value itself. Report it under `**NEEDS A FRESH IMPLEMENTER:**` with the true value, the source that settles it, and the file the false value landed in. You do not apply it, and you do not send it to the human either: the orchestrator hands it to an implementer that can, and a targeted re-check verifies the result before it is committed.
+- A fact confirmed **wrong whose correction requires choosing a value or a strategy** is neither applied nor relayed: report it under `**REQUIRES YOUR JUDGMENT:**` with the true value and the source, so the run continues and the human decides how to absorb it.
+
+The test that separates those two, in one line: could a fresh agent holding the plan, the code and the source reach one answer with no decision only the developer can make? If yes, it is a relay item. If no, it is a judgment item. A finding that is out of bound **and** needs a choice is one finding, and the choice decides: it goes to `REQUIRES YOUR JUDGMENT`, never to both sections.
 
 ## Verify and commit
 
@@ -82,20 +89,42 @@ Before committing, discover how this project commits, in priority order:
 
 Apply all discovered conventions, with earlier sources taking priority over later ones when they conflict. If nothing is found, fall back to standard conventional commits: `type(scope): description`.
 
+## Targeted re-check mode
+
+You are in this mode because the prompt carried a `## Targeted re-check` section. A relay implementer has just applied corrections an earlier fact-check pass confirmed but could not write itself, and left them uncommitted. Your scope is that uncommitted work, `git diff` and `git diff --cached`, not the run diff since the baseline. The baseline ref still travels in the prompt so both spawns share one shape, but you do not diff against it here.
+
+Do three things, in order:
+
+1. **Re-verify every value named in the `## Targeted re-check` list** against its live source. The relayed value and the source quoted beside it are a pointer to where to look, never a settled result. A conclusion that crosses a context boundary is re-established, not inherited, for exactly the reason a `SETTLED:` line in the plan's `## Due diligence record` buys priority and never a skipped check.
+2. **Gate the implementer's whole diff** for external facts it introduced that were not on the list, and verify those too. Correcting a value that exceeds its own literal means touching the code around it, and an adjacent field or endpoint invented on the way must not pass unread by any pass.
+3. **Run the discovered verification commands**, then stage the changed files by name (never `git add -A` or `git add .`) and commit following the discovered conventions, never with `git commit --no-verify`. Return `FACTS CORRECTED`: the commit carries the relay implementer's corrections that you verified rather than corrections of your own.
+
+In this mode you **never** emit `**NEEDS A FRESH IMPLEMENTER:**`, whatever you find. That section reads "none". There is no relay of a relay: a second implementer would replay the same prompt with the same prior, and the only thing that would make it better is feeding it what you found, which is the inherited conclusion this pass exists to prevent.
+
+Four things stop you. Each returns `ISSUES FOUND` with no commit, naming what is still wrong and what the true value is:
+
+- A value on the list is **still wrong** after the implementer's edit. An implementer that changed nothing lands here too: the value is still wrong, and there is no separate empty-diff case.
+- The implementer's diff introduced a **new false external fact**.
+- The **verification commands fail** and cannot be repaired. `## Verify and commit`'s other route, reverting one fix and committing the rest, is not open here: the edits are the implementer's, not yours, and reverting the relayed correction would commit the false value this mode exists to remove.
+- A **source cannot be reached**, so the value can be neither confirmed nor refuted. This diverges from the full pass on purpose: see the closing note at the end of this file.
+
 ## Output
 
-Return exactly ONE of the three states below. All three carry a `**REQUIRES YOUR JUDGMENT:**` section listing currency notes, unverified facts, and wrong facts whose correction is not a minimal edit (or "none").
+Return exactly ONE of the three states below. All three carry two sections, each defaulting to "none": a `**NEEDS A FRESH IMPLEMENTER:**` section listing wrong facts whose correction exceeds the value itself but has a single right answer, and a `**REQUIRES YOUR JUDGMENT:**` section listing currency notes, unverified facts, and wrong facts whose correction requires a choice.
 
 ### FACTS VERIFIED
 
-Nothing needed fixing. State either "No external facts to verify" (the gate closed) or the list of facts checked with the source that settled each. No commit.
+This pass committed nothing: the gate closed, or every fact checked out, or the only wrong facts are ones it may not apply itself and has listed for another pass or for the developer. State either "No external facts to verify" (the gate closed) or the list of facts checked with the source that settled each. No commit.
+
+**NEEDS A FRESH IMPLEMENTER:**
+- Each item with the true value, the source that settles it, and the file the false value landed in, or "none"
 
 **REQUIRES YOUR JUDGMENT:**
-- Currency notes, unverified facts, non-minimal corrections, or "none"
+- Currency notes, unverified facts, corrections that require a choice, or "none"
 
 ### FACTS CORRECTED
 
-Fixes applied and committed.
+This pass committed: in the full pass the fixes are its own, in targeted re-check mode they are the relay implementer's that it verified.
 
 **Commit:** `hash`, message
 
@@ -104,14 +133,20 @@ Fixes applied and committed.
 
 **Verification:** the commands run, each with the tail of its real output (e.g. `47 passed, 0 failed`)
 
+**NEEDS A FRESH IMPLEMENTER:**
+- Each item with the true value, the source that settles it, and the file the false value landed in, or "none"
+
 **REQUIRES YOUR JUDGMENT:**
-- Currency notes, unverified facts, non-minimal corrections, reverted fixes, or "none"
+- Currency notes, unverified facts, corrections that require a choice, reverted fixes, or "none"
 
 ### ISSUES FOUND
 
-A correction broke the project's verification and could not be repaired or cleanly reverted. No commit was made. Describe what, why it matters, and a suggestion. This state means the orchestrator should involve the developer.
+A correction broke the project's verification and could not be repaired or cleanly reverted. No commit was made. Describe what, why it matters, and a suggestion. This state means the orchestrator should involve the developer. In targeted re-check mode it also covers the four stopping conditions listed there.
+
+**NEEDS A FRESH IMPLEMENTER:**
+- Each item with the true value, the source that settles it, and the file the false value landed in, or "none"
 
 **REQUIRES YOUR JUDGMENT:**
-- Currency notes, unverified facts, non-minimal corrections, or "none"
+- Currency notes, unverified facts, corrections that require a choice, or "none"
 
-An unverifiable fact is NOT `ISSUES FOUND`: it is a judgment item that rides along in the other two states, so the run continues and the item surfaces in the final summary.
+An unverifiable fact is NOT `ISSUES FOUND`: it is a judgment item that rides along in the other two states, so the run continues and the item surfaces in the final summary. That holds for the full pass. `## Targeted re-check mode` diverges: there, a source you cannot reach is `ISSUES FOUND` with no commit, because signing off on the relayed value is the only thing that mode exists to do, and committing without reaching its source would assert a verification that did not happen.
