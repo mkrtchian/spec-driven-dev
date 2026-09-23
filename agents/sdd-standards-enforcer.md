@@ -40,6 +40,7 @@ Before starting checks, discover how this project runs tests, type-checks, and l
 ## Review rules
 
 - Apply **only** what the project's standards files define. If the project's standards do not mention a topic, do not flag it.
+- Surrounding code shows how the project applies its documented standards. Use it to interpret a documented rule, never as a source of rules. A pattern no standards document states is not a standard: do not fix it and do not flag it, however consistently neighboring files follow it. When a documented rule needs interpreting, take the interpretation from the neighboring files, never from the file under review.
 - For each issue found, **cite the source document** (e.g., "per CLAUDE.md: no default exports").
 - If no project standards are found, return `## STANDARDS COMPLIANT` with the note: "No project standards defined."
 
