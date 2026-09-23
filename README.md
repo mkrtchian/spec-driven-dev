@@ -5,12 +5,12 @@ Your plan, fresh agents, zero drift.
 [![Markdown only](https://img.shields.io/badge/zero_code-markdown_prompts_only-brightgreen.svg)](#whats-in-this-repo)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg)](https://code.claude.com/docs)
 
-A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 2 skills, 9 agents, ~1,400 lines of markdown. No code, nothing to configure, no state directories. Just prompts.
+A structured workflow for AI-assisted development: from discussion to reviewed, tested, standards-compliant code, through a version-controlled plan. 3 skills, 9 agents, ~1,650 lines of markdown. No code, nothing to configure, no state directories. Just prompts.
 
 ## Prerequisites
 
 - [Claude Code](https://code.claude.com/docs) (requires a paid Claude subscription or an API key)
-- Every pass runs on the model pinned in the agent definitions, currently Opus, regardless of your session's model
+- Every agent pass runs on the model pinned in the agent definitions, currently Opus, regardless of your session's model. The code `/small-change` writes is the exception: your session's model writes it.
 
 ## Install
 
@@ -32,6 +32,11 @@ A structured workflow for AI-assisted development: from discussion to reviewed, 
 /implement-plan plans/YYYY-MM-DD_my-feature.md
 ```
 
+```bash
+# For a change that doesn't need a reviewed plan, run this in the session where you discussed the change
+/small-change Add a --dry-run flag to the export command
+```
+
 ## The problem
 
 AI coding assistants hit two walls on non-trivial changes:
@@ -41,9 +46,9 @@ AI coding assistants hit two walls on non-trivial changes:
 
 ## The approach
 
-Two skills, each orchestrating fresh agents: every agent starts with its own context window, focused on a single concern.
+Three skills, each orchestrating fresh agents: every agent starts with its own context window, focused on a single concern.
 
-The review passes run with fresh agents that never saw the code being written. Same principle as human code review, where the reviewer shouldn't be the author. One pass is deliberately not fresh: the orchestrator drafts the plan itself, because the draft needs the discussion.
+The review passes run with fresh agents that never saw the code being written. Same principle as human code review, where the reviewer shouldn't be the author. Two writing steps are deliberately not fresh, because both need the discussion: the orchestrator drafts the plan itself, and in `/small-change` the main session writes the code.
 
 ```mermaid
 flowchart TD
@@ -75,11 +80,13 @@ flowchart TD
     style K fill:#ecfdf5,stroke:#059669
 ```
 
+`/small-change` drops the plan and keeps the review. Before coding, the main session writes three to five lines of intent (the need, what counts as done, the files it expects to touch), which go in the commit body and stand in for the plan in the fact check and the final review. Once it has written the change, the three passes that end `/implement-plan` review it: fact check, standards, final review.
+
 ## Design decisions
 
-**Isolated passes.** A single agent asked to "implement this plan, follow TDD, and check coding standards" will do all three poorly. An agent that just spent 20 minutes implementing code is a poor judge of it: it's biased toward the code it just wrote. The orchestrator is the one context that lives through the whole run, so it stays light: it references its agents by `subagent_type`, and their prompt content never enters it. For the detailed rationale and sources, see [design-decisions.md](docs/design-decisions.md).
+**Isolated passes.** A single agent asked to "implement this plan, follow TDD, and check coding standards" will do all three poorly. An agent that just spent 20 minutes implementing code is a poor judge of it: it's biased toward the code it just wrote. The orchestrator is the one context that lives through the whole run, so it stays light: it references its agents by `subagent_type`, and their prompt content never enters it. In `/small-change` the orchestrator is the main session, which writes the code itself, so the code enters its context and only the agents' prompt content stays out. For the detailed rationale and sources, see [design-decisions.md](docs/design-decisions.md).
 
-**Fix what has one answer, flag the rest.** A wrong file path, a type signature that doesn't match the code, a violation of a documented standard: one right answer, so the pass applies it. When the one right answer exceeds what the finding pass may write, like a wrong API field the fact checker would have to restructure code around to correct, the finding is handed to the pass that can apply it, and a fresh pass verifies the result. Anything that rests on a judgment call is never decided for you, it comes back as a remark in the pass report or as a `<!-- REVIEW: ... -->` marker in the plan. On the happy path you are interrupted once per command, at the end.
+**Fix what has one answer, flag the rest.** A wrong file path, a type signature that doesn't match the code, a violation of a documented standard: one right answer, so the pass applies it. When the one right answer exceeds what the finding pass may write, like a wrong API field the fact checker would have to restructure code around to correct, the finding is handed to the pass that can apply it, and a fresh pass verifies the result. `/small-change` doesn't hand the finding on, so it comes to you. Anything that rests on a judgment call is never decided for you, it comes back as a remark in the pass report or as a `<!-- REVIEW: ... -->` marker in the plan. On the happy path you are interrupted once per command, at the end.
 
 **Plans in git.** Your plan is a plain markdown file in `plans/`. It goes through your normal PR review process. No state directory, no counters to keep in sync. Two developers can plan and implement different features on different branches without interfering.
 
@@ -91,7 +98,9 @@ flowchart TD
 
 **Step hardening.** After each implementation step, a fresh agent verifies alignment with the plan and fixes emergent issues. Problems are caught early, not discovered at the end.
 
-**External facts checked against live sources.** Versions, API fields, endpoints and published identifiers go stale at the model's training cutoff, and a stale fact looks exactly like a correct one. Two gated passes check them against the live web, one on the plan and one on the final diff, and the implementer may look a missing value up rather than invent one. That widens the web surface of a workflow that writes code, which [design-decisions.md](docs/design-decisions.md) names and bounds.
+**Conditional security check.** The final review checks security only when the diff touches a trust boundary: an auth check, a secret, a dependency, or outside data reaching a query, a command or a deserializer.
+
+**External facts checked against live sources.** Versions, API fields, endpoints and published identifiers go stale at the model's training cutoff, and a stale fact looks exactly like a correct one. Two gated passes check them against the live web, one on the plan and one on the final diff. The implementer, or the main session in `/small-change`, may look a missing value up rather than invent one. That widens the web surface of a workflow that writes code, which [design-decisions.md](docs/design-decisions.md) names and bounds.
 
 ## Example plans
 
@@ -102,15 +111,15 @@ The [mcp-auditor](https://github.com/mkrtchian/mcp-auditor) project was built us
 - Developers working on non-trivial features where AI "just do it" approaches produce drift and rework
 - Teams that do code review and want AI-generated code to go through the same rigor
 
-Not for a single-file fix or a small refactor: the overhead exceeds the benefit there, and plain Claude Code or plan mode, with a fresh review pass, does the job.
+A single-file fix or a small refactor doesn't need a plan: `/small-change` runs the passes that end `/implement-plan` on code the main session writes. Which changes count as small is your project's call: if your `CLAUDE.md` says which changes need a plan, `/small-change` checks the change against that rule.
 
 ## What's in this repo
 
 ```
-skills/          2 orchestrator skills (/write-plan, /implement-plan)
+skills/          3 orchestrator skills (/write-plan, /implement-plan, /small-change)
 agents/          9 custom agent definitions, one per fresh-agent pass in the diagram above
 docs/            Workflow guide, design decisions, framework comparison
-plans/           4 plans, produced by running this workflow on itself
+plans/           6 plans, produced by running this workflow on itself
 ```
 
 The agents are distributed with the plugin. Manual installation is not supported: the plugin system resolves the agent references.
@@ -119,7 +128,7 @@ The agents are distributed with the plugin. Manual installation is not supported
 
 In practice, well-structured prompts are followed reliably, though not perfectly. Tests run, TDD is applied, standards are checked. The step hardener catches most of what slips through by verifying each step with fresh context before committing.
 
-These are instructions, not enforced gates, but they are instructions you can read. The implementer is told never to commit, so a fresh agent is the one that verifies the step and commits it. Every agent that commits has to quote the tail of the real command output ("47 passed, 0 failed") instead of asserting a PASS. No commit path, agent or orchestrator, may use `--no-verify` or `git add -A`. All three are in the agent and skill files, in plain markdown.
+These are instructions, not enforced gates, but they are instructions you can read. The implementer is told never to commit, so a fresh agent is the one that verifies the step and commits it. In `/small-change` the main session commits its own change, and each review pass that follows commits its own fixes separately. Every agent that commits has to quote the tail of the real command output ("47 passed, 0 failed") instead of asserting a PASS. No commit path, agent or orchestrator, may use `--no-verify` or `git add -A`. All of these are in the agent and skill files, in plain markdown.
 
 What a pass cannot settle on its own either goes to an agent that can, with a fresh pass verifying the result before it is committed, or comes to you, and a blocked step is never hardened or skipped past. There is no cross-session state: an interrupted run restarts from the top of the plan, with the already-committed steps still in git. Failure paths are in the [workflow guide](docs/workflow.md).
 
